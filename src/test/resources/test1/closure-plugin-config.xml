@@ -1,0 +1,31 @@
+<project>
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>webapp-minifier-maven-plugin</artifactId>
+            <configuration>
+               <sourceDirectory>${basedir}/target/test-classes/test1/src/main/webapp</sourceDirectory>
+               <targetDirectory>${basedir}/target/test-closure-min</targetDirectory>
+               <parser>jsoup</parser>
+               <skipMinify>false</skipMinify>
+               <skipCssMinify>false</skipCssMinify>
+               <skipEmbeddedCssMinify>false</skipEmbeddedCssMinify>
+               <skipJsMinify>false</skipJsMinify>
+               <skipEmbeddedJsMinify>false</skipEmbeddedJsMinify>
+               <mergeEmbeddedCss>false</mergeEmbeddedCss>
+               <mergeEmbeddedJs>false</mergeEmbeddedJs>
+               <encoding>UTF-8</encoding>
+               <cssPrefix>css</cssPrefix>
+               <jsPrefix>js</jsPrefix>
+               <jsCompressorEngine>CLOSURE</jsCompressorEngine>
+               <closureCompilationLevel>SIMPLE_OPTIMIZATIONS</closureCompilationLevel>
+               <yuiCssLineBreak>-1</yuiCssLineBreak>
+               <yuiJsDisableOptimizations>false</yuiJsDisableOptimizations>
+               <yuiJsLineBreak>-1</yuiJsLineBreak>
+               <yuiJsNoMunge>false</yuiJsNoMunge>
+               <yuiJsPreserveAllSemiColons>false</yuiJsPreserveAllSemiColons>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+</project>

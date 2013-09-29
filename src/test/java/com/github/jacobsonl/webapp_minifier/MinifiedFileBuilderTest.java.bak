@@ -1,0 +1,82 @@
+package com.github.jacobsonl.webapp_minifier;
+
+import static org.testng.Assert.*;
+
+import java.io.File;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+/**
+ * This class tests {@link MinifiedFileBuilder}.
+ * 
+ * @author Lonny
+ */
+public class MinifiedFileBuilderTest {
+   /**
+    * Tests
+    * {@link MinifiedFileBuilder#MinifiedFileBuilder(File, String, String)}
+    * exceptions.
+    * 
+    * @param targetDirectory
+    *           the target directory.
+    * @param prefix
+    *           the minified file prefix.
+    * @param extension
+    *           the minified file's extension.
+    */
+   @Test(dataProvider = "constructorExceptions", expectedExceptions = { IllegalArgumentException.class })
+   public void testConstructorExceptions(File targetDirectory, String prefix,
+         String extension) {
+      new MinifiedFileBuilder(targetDirectory, prefix, extension);
+   }
+
+   /**
+    * Provides test data for
+    * {@link #testConstructorExceptions(File, String, String)}.
+    * 
+    * @return the test data.
+    */
+   @DataProvider
+   public Object[][] constructorExceptions() {
+      final File targetDirectory = new File("target");
+      final String prefix = "prefix";
+      final String extension = "ext";
+      return new Object[][] { new Object[] { null, prefix, extension },
+            new Object[] { targetDirectory, null, extension },
+            new Object[] { targetDirectory, prefix, null }, };
+   }
+
+   /**
+    * Tests the desired behavior of {@link MinifiedFileBuilder}.
+    */
+   @Test
+   public void testMinifiedFileBuilder() {
+      File targetDirectory = new File(System.getProperty("java.io.tmpdir"));
+      final String prefix = "test";
+      final String extension = "ext";
+      MinifiedFileBuilder builder = new MinifiedFileBuilder(targetDirectory,
+            prefix, extension);
+      assertTrue(builder.isNewFile(), "This should indicate a new file");
+
+      MinifiedFileInfo fileInfo1 = builder.getCurrentFile();
+      assertNotNull(fileInfo1, "getCurrentFile(); should never return null");
+      assertFalse(builder.isNewFile(), "This should not indicate a new file");
+      assertEquals(builder.getCurrentFile(), fileInfo1);
+
+      final File file = fileInfo1.getFile();
+      assertNotNull(file, "The file should not be null");
+      assertEquals(file.getParentFile(), targetDirectory);
+      final String name = file.getName();
+      assertEquals(name.substring(0, prefix.length()), prefix);
+      assertEquals(name.substring(name.lastIndexOf('.') + 1), extension);
+
+      builder.finishFile();
+      assertTrue(builder.isNewFile(), "This should indicate a new file");
+
+      MinifiedFileInfo fileInfo2 = builder.getCurrentFile();
+      assertNotNull(fileInfo2, "getCurrentFile(); should never return null");
+      assertNotEquals(fileInfo1, fileInfo2);
+      assertNotEquals(fileInfo1.getFile(), fileInfo2.getFile());
+   }
+}
