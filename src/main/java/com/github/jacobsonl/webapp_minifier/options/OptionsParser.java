@@ -5,7 +5,6 @@ package com.github.jacobsonl.webapp_minifier.options;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -118,16 +117,9 @@ public class OptionsParser {
                try {
                   beanUtils.setProperty(options, (String) entry.getKey(),
                         entry.getValue());
-               } catch (final IllegalAccessException e) {
-                  // TODO Auto-generated catch block
-                  throw new ParseOptionException(e);
-               } catch (final InvocationTargetException e) {
-                  // TODO Auto-generated catch block
-                  log.warn("Failed to update the '" + entry.getKey()
-                        + "' option: " + e.getMessage());
-                  if (log.isDebugEnabled()) {
-                     log.debug(e);
-                  }
+               } catch (final Exception e) {
+                  throw new ParseOptionException(
+                        "An error occurred while handling option " + entry, e);
                }
             }
          } catch (final IOException e) {
