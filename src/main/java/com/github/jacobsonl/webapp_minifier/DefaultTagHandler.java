@@ -76,15 +76,15 @@ public class DefaultTagHandler implements NodeHandler {
    public DefaultTagHandler(final Log log, final PluginOptions options) {
       this.log = log;
       this.pluginOptions = options;
-      MinifiedFileBuilder cssFileBuilder = new MinifiedFileBuilder(
+      final MinifiedFileBuilder cssFileBuilder = new MinifiedFileBuilder(
             options.getTargetDirectory(), options.getCssPrefix(), "css");
       this.cssContext = new MinificationContext("YUI",
             createCssCompressor(options), cssFileBuilder);
-      MinifiedFileBuilder jsFileBuilder = new MinifiedFileBuilder(
+      final MinifiedFileBuilder jsFileBuilder = new MinifiedFileBuilder(
             options.getTargetDirectory(), options.getJsPrefix(), "js");
       this.jsContext = new MinificationContext(options.getJsCompressorEngine()
             .toString(), createJavaScriptCompressor(options), jsFileBuilder);
-      optionsParser = new OptionsParser(log);
+      this.optionsParser = new OptionsParser(log);
    }
 
    /**
@@ -180,20 +180,24 @@ public class DefaultTagHandler implements NodeHandler {
    }
 
    @Override
-   public void start(File file) {
-      this.options = new DefaultOverridablePluginOptions(pluginOptions);
+   public void start(final File file) {
+      this.options = new DefaultOverridablePluginOptions(this.pluginOptions);
       this.currentFile = new HtmlFileSummary();
-      currentFile.setFile(file);
-      minificationSummary.getHtmlFiles().add(currentFile);
+      this.currentFile.setFile(file);
+      this.minificationSummary.getHtmlFiles().add(this.currentFile);
    }
 
    @Override
    public boolean handleComment(final String text) throws ParseOptionException {
       this.log.debug("Handling comment '" + text + "'");
 
-      if (optionsParser.containsOptionsHeader(text)) {
-         options = optionsParser.parse(text,
-               new DefaultOverridablePluginOptions(options));
+      if (this.optionsParser.containsOptionsHeader(text)) {
+         this.options = this.optionsParser.parse(text,
+               new DefaultOverridablePluginOptions(this.options));
+         this.cssContext.setCompressor(createCssCompressor(this.options));
+         this.jsContext.setCompressor(createJavaScriptCompressor(this.options));
+         this.jsContext.setMinifier(this.options.getJsCompressorEngine()
+               .toString());
          return true;
       }
       return false;
@@ -202,7 +206,7 @@ public class DefaultTagHandler implements NodeHandler {
    @Override
    public String handleExternalCss(final String url) throws IOException {
       this.log.debug("Handling external CSS '" + url + "'");
-      String result = minifyExternalCode(url, this.cssContext);
+      final String result = minifyExternalCode(url, this.cssContext);
       return result;
    }
 
@@ -214,23 +218,23 @@ public class DefaultTagHandler implements NodeHandler {
       }
       final boolean skipEmbedded = this.options.isSkipEmbeddedCssMinify();
       final boolean mergeEmbedded = this.options.isMergeEmbeddedCss();
-      MinifiedFileMetrics metrics = new MinifiedFileMetrics();
+      final MinifiedFileMetrics metrics = new MinifiedFileMetrics();
       metrics.setSource(MinifiedFileMetrics.EMBEDDED_CSS);
 
       final String result = minifyEmbedded(text, skipEmbedded, mergeEmbedded,
-            cssContext, metrics);
+            this.cssContext, metrics);
 
       if (metrics.getDestination() == null) {
          metrics.setDestination(MinifiedFileMetrics.EMBEDDED_CSS);
       }
-      currentFile.getMinifiedFiles().add(metrics);
+      this.currentFile.getMinifiedFiles().add(metrics);
       return result;
    }
 
    @Override
    public String handleExternalJs(final String url) throws IOException {
       this.log.debug("Handling external JavaScript '" + url + "'");
-      String result = minifyExternalCode(url, jsContext);
+      final String result = minifyExternalCode(url, this.jsContext);
       return result;
    }
 
@@ -241,21 +245,21 @@ public class DefaultTagHandler implements NodeHandler {
       }
       final boolean skipEmbedded = this.options.isSkipEmbeddedJsMinify();
       final boolean mergeEmbedded = this.options.isMergeEmbeddedJs();
-      MinifiedFileMetrics metrics = new MinifiedFileMetrics();
+      final MinifiedFileMetrics metrics = new MinifiedFileMetrics();
       metrics.setSource(MinifiedFileMetrics.EMBEDDED_JS);
 
       final String result = minifyEmbedded(text, skipEmbedded, mergeEmbedded,
-            jsContext, metrics);
+            this.jsContext, metrics);
 
       if (metrics.getDestination() == null) {
          metrics.setDestination(MinifiedFileMetrics.EMBEDDED_JS);
       }
-      currentFile.getMinifiedFiles().add(metrics);
+      this.currentFile.getMinifiedFiles().add(metrics);
       return result;
    }
 
    @Override
-   public void handleText(String text) {
+   public void handleText(final String text) {
       // Do nothing.
    }
 
@@ -264,14 +268,14 @@ public class DefaultTagHandler implements NodeHandler {
       if (this.log.isDebugEnabled()) {
          this.log.debug("Handling another node '" + nodeName + "'");
       }
-      cssContext.getFileBuilder().finishFile();
-      jsContext.getFileBuilder().finishFile();
+      this.cssContext.getFileBuilder().finishFile();
+      this.jsContext.getFileBuilder().finishFile();
    }
 
    @Override
    public void complete() {
-      cssContext.getFileBuilder().finishFile();
-      jsContext.getFileBuilder().finishFile();
+      this.cssContext.getFileBuilder().finishFile();
+      this.jsContext.getFileBuilder().finishFile();
       this.currentFile = null;
    }
 
@@ -299,8 +303,8 @@ public class DefaultTagHandler implements NodeHandler {
          final MinificationContext context) throws FileNotFoundException,
          IOException {
       String result = urlString;
-      Compressor compressor = context.getCompressor();
-      MinifiedFileBuilder builder = context.getFileBuilder();
+      final Compressor compressor = context.getCompressor();
+      final MinifiedFileBuilder builder = context.getFileBuilder();
       if (compressor != null) {
          // TODO: Determine if the file has already been minified.
          File sourceFile = new File(this.pluginOptions.getTargetDirectory(),
@@ -311,17 +315,19 @@ public class DefaultTagHandler implements NodeHandler {
          if (sourceFile.exists()) {
             inputStream = new FileInputStream(sourceFile);
          } else {
-            // Otherwise, search the "other directories" for a matching file.
-            for (Entry<Object, Object> entry : this.pluginOptions
+            // Otherwise, search the "other directories" for a matching
+            // file.
+            for (final Entry<Object, Object> entry : this.pluginOptions
                   .getOtherDirectories().entrySet()) {
                String key = (String) entry.getKey();
                if (!key.endsWith("/")) {
                   key = key + '/';
                }
                if (urlString.startsWith(key)) {
-                  log.debug("Searching for '" + urlString + "' using key '"
-                        + key + "' which points to '" + entry.getValue() + "'");
-                  File otherTarget = new File((String) entry.getValue());
+                  this.log.debug("Searching for '" + urlString
+                        + "' using key '" + key + "' which points to '"
+                        + entry.getValue() + "'");
+                  final File otherTarget = new File((String) entry.getValue());
                   sourceFile = new File(otherTarget, urlString.substring(key
                         .length()));
                   if (sourceFile.exists()) {
@@ -335,7 +341,7 @@ public class DefaultTagHandler implements NodeHandler {
          // If an input stream was not found for the current URL string, skip
          // the tag and create a new minified file next time.
          if (inputStream == null) {
-            log.debug("Did not find '" + urlString
+            this.log.debug("Did not find '" + urlString
                   + "'.  Its content will not be minified.");
             builder.finishFile();
          } else {
@@ -344,20 +350,20 @@ public class DefaultTagHandler implements NodeHandler {
                   this.pluginOptions.getEncoding(), 8192);
             final MinifiedFileInfo fileInfo = builder.getCurrentFile();
             final File destinationFile = fileInfo.getFile();
-            MinifiedFileMetrics metrics = new MinifiedFileMetrics();
+            final MinifiedFileMetrics metrics = new MinifiedFileMetrics();
             metrics.setSource(urlString);
             metrics.setMinifier(context.getMinifier());
             result = minify(compressor, original, destinationFile, metrics);
-            currentFile.getMinifiedFiles().add(metrics);
+            this.currentFile.getMinifiedFiles().add(metrics);
 
             // Keep track of which inputs went into which outputs.
             fileInfo.getFiles().add(sourceFile);
-            if (minifiedFiles.containsKey(sourceFile)) {
-               minifiedFiles.get(sourceFile).add(fileInfo);
+            if (this.minifiedFiles.containsKey(sourceFile)) {
+               this.minifiedFiles.get(sourceFile).add(fileInfo);
             } else {
-               Collection<MinifiedFileInfo> c = new ArrayList<MinifiedFileInfo>();
+               final Collection<MinifiedFileInfo> c = new ArrayList<MinifiedFileInfo>();
                c.add(fileInfo);
-               minifiedFiles.put(sourceFile, c);
+               this.minifiedFiles.put(sourceFile, c);
             }
          }
       }
@@ -392,22 +398,22 @@ public class DefaultTagHandler implements NodeHandler {
          final MinificationContext context, final MinifiedFileMetrics metrics)
          throws FileNotFoundException, IOException {
       final String result;
-      Compressor compressor = context.getCompressor();
-      MinifiedFileBuilder builder = context.getFileBuilder();
+      final Compressor compressor = context.getCompressor();
+      final MinifiedFileBuilder builder = context.getFileBuilder();
       if (skipEmbedded || (compressor == null)) {
          result = text;
          builder.finishFile();
       } else if (mergeEmbedded && !builder.isNewFile()) {
-         MinifiedFileInfo fileInfo = builder.getCurrentFile();
+         final MinifiedFileInfo fileInfo = builder.getCurrentFile();
          final File file = fileInfo.getFile();
          metrics.setMinifier(context.getMinifier());
          minify(compressor, text, file, metrics);
          fileInfo.setEmbeddedIncluded(true);
          result = null;
       } else {
-         long startTime = System.nanoTime();
+         final long startTime = System.nanoTime();
          result = compressor.compress(text);
-         long endTime = System.nanoTime();
+         final long endTime = System.nanoTime();
          metrics.setTime(endTime - startTime);
          metrics.setOriginalLength(text.length());
          metrics.setMinifiedLength(result.length());
@@ -451,15 +457,15 @@ public class DefaultTagHandler implements NodeHandler {
          }
          oStream = new BufferedOutputStream(new FileOutputStream(
                destinationFile, true));
-         long startTime = System.nanoTime();
+         final long startTime = System.nanoTime();
          final String compressed = compressor.compress(input);
-         long endTime = System.nanoTime();
+         final long endTime = System.nanoTime();
          metrics.setTime(endTime - startTime);
          metrics.setOriginalLength(input.length());
          metrics.setMinifiedLength(compressed.length());
          metrics.setDestination(destinationFile.getName());
          IOUtil.copy(compressed, oStream);
-         log.info("Reduced input from " + input.length() + " to "
+         this.log.info("Reduced input from " + input.length() + " to "
                + compressed.length() + " characters");
       } finally {
          IOUtil.close(oStream);
