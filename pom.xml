@@ -10,7 +10,7 @@
 
    <groupId>com.github.jacobsonl</groupId>
    <artifactId>webapp-minifier-maven-plugin</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>0.9.0-SNAPSHOT</version>
    <packaging>maven-plugin</packaging>
 
    <name>Webapp Minifier Maven Plugin</name>
@@ -147,7 +147,7 @@
       <dependency>
          <groupId>pl.pragmatists</groupId>
          <artifactId>JUnitParams</artifactId>
-         <version>1.0.1</version>
+         <version>1.0.2</version>
          <scope>test</scope>
       </dependency>
    </dependencies>
@@ -335,4 +335,31 @@
          </plugin>
       </plugins>
    </reporting>
+
+   <profiles>
+      <!-- Exclude tests that throw an NPE in Windows due to a bug in junitparams: http://code.google.com/p/junitparams/issues/detail?id=46 -->
+      <profile>
+         <id>Exclude Buggy Tests</id>
+         <activation>
+            <os>
+               <family>windows</family>
+            </os>
+         </activation>
+         <build>
+            <pluginManagement>
+               <plugins>
+                  <plugin>
+                     <artifactId>maven-surefire-plugin</artifactId>
+                     <configuration>
+                        <excludes>
+                           <exclude>**/JsoupTagReplacerTest*</exclude>
+                           <exclude>**/OptionsParserTest*</exclude>
+                        </excludes>
+                     </configuration>
+                  </plugin>
+               </plugins>
+            </pluginManagement>
+         </build>
+      </profile>
+   </profiles>
 </project>
