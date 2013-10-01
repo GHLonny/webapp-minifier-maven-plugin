@@ -178,7 +178,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * </pre>
     */
    @Parameter
-   private Properties otherDirectories = new Properties();
+   private final Properties otherDirectories = new Properties();
 
    /**
     * The JavaScript Compressor to use:
@@ -290,16 +290,6 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
                tagHandler.start(htmlFile);
                tagReplacer.process(inputStream, tagHandler, baseUri,
                      outputStream);
-               if (!htmlFile.renameTo(htmlFileBackup)) {
-                  throw new MojoExecutionException("Failed to rename "
-                        + htmlFile.getName() + " to "
-                        + htmlFileBackup.getName());
-               }
-               if (!minifiedHtmlFile.renameTo(htmlFile)) {
-                  throw new MojoExecutionException("Failed to rename "
-                        + minifiedHtmlFile.getName() + " to "
-                        + htmlFile.getName());
-               }
             } catch (final IOException e) {
                throw new MojoExecutionException(
                      "Failed to process " + htmlFile, e);
@@ -307,20 +297,28 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
                IOUtil.close(inputStream);
                IOUtil.close(outputStream);
             }
+            if (!htmlFile.renameTo(htmlFileBackup)) {
+               throw new MojoExecutionException("Failed to rename "
+                     + htmlFile.getName() + " to " + htmlFileBackup.getName());
+            }
+            if (!minifiedHtmlFile.renameTo(htmlFile)) {
+               throw new MojoExecutionException("Failed to rename "
+                     + minifiedHtmlFile.getName() + " to " + htmlFile.getName());
+            }
          }
 
          // Write out the summary file.
-         final File summaryFile = new File(targetDirectory,
+         final File summaryFile = new File(this.targetDirectory,
                "webapp-minifier-summary.xml");
          try {
-            JAXBContext context = JAXBContext
+            final JAXBContext context = JAXBContext
                   .newInstance(MinificationSummary.class);
-            Marshaller marshaller = context.createMarshaller();
+            final Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_ENCODING, getEncoding());
             marshaller.marshal(tagHandler.getReport(), summaryFile);
             tagHandler.getReport();
-         } catch (JAXBException e) {
+         } catch (final JAXBException e) {
             throw new MojoExecutionException(
                   "Failed to marshal the plugin's summary to XML", e);
          }
@@ -549,6 +547,6 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    @Override
    public Properties getOtherDirectories() {
-      return otherDirectories;
+      return this.otherDirectories;
    }
 }
