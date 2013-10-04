@@ -145,20 +145,20 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    /**
     * The character encoding used for HTML, JavScript and CSS files.
     */
-   @Parameter(defaultValue = "${project.build.sourceEncoding}")
+   @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
    private String encoding;
 
    /**
     * The prefix for minified CSS files.
     */
    @Parameter(defaultValue = "css")
-   private String cssPrefix;
+   private String cssPrefix = "css";
 
    /**
     * The prefix for minified JavaScript files.
     */
    @Parameter(defaultValue = "js")
-   private String jsPrefix;
+   private String jsPrefix = "js";
 
    /**
     * Defines other directories where CSS and JavaScript files may be found.
@@ -191,13 +191,13 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * </ul>
     */
    @Parameter(defaultValue = "YUI")
-   private OverridablePluginOptions.JavaScriptCompressor jsCompressorEngine;
+   private JavaScriptCompressor jsCompressorEngine = JavaScriptCompressor.YUI;
 
    /**
     * The Google Closure compiler level.
     */
    @Parameter(defaultValue = "SIMPLE_OPTIMIZATIONS")
-   private CompilationLevel closureCompilationLevel;
+   private CompilationLevel closureCompilationLevel = CompilationLevel.SIMPLE_OPTIMIZATIONS;
 
    /**
     * Instructs the YUI Compressor to break lines after the specified number of
@@ -208,7 +208,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * </ul>
     */
    @Parameter(defaultValue = "-1")
-   private int yuiCssLineBreak;
+   private int yuiCssLineBreak = -1;
 
    /**
     * Instructs the YUI Compressor to disable all JavaScript
@@ -226,7 +226,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * </ul>
     */
    @Parameter(defaultValue = "-1")
-   private int yuiJsLineBreak;
+   private int yuiJsLineBreak = -1;
 
    /**
     * Instructs the YUI Compressor to only minify JavaScript without obfuscating
