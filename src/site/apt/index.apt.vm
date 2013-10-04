@@ -1,0 +1,44 @@
+Webapp Minifier Maven Plugin
+
+ The Webapp Minifier plugin minifies CSS and JavaScript content for a 
+ web application.  The intent behind the plugin is to simplify the task of 
+ minifying the application's CSS and JavaScript without the need for any
+ additional configuration.  The plugin scans the HTML and either replaces the
+ content with the minified version or appends it to previously minified content.
+ If minification is not desired, such as for debugging purposes, it can be 
+ disabled in the plugin's configuration.
+ 
+* Quick Start
+
+ Here is a basic configuration to get you started:
+
++-----+
+<project>
+   ...
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>${project.artifactId}</artifactId>
+            <version>${project.version}</version>
+         </plugin>
+         <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+               <warSourceDirectory>\${project.build.directory}/\${project.build.finalName}-min</warSourceDirectory>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+</project>
++-----+
+
+ By default, the plugin creates the minified web application in the 
+ <<<$\{project.build.directory\}/$\{project.build.finalName\}-min>>> directory. You must
+ point the war plugin (or whatever you're using to generate your war) to that
+ directory.
+
+ Once you have that working, head over to the 
+ {{{./webapp-minifier-mojo.html}goal configuration}} to customize the plugin's
+ behavior.
+
