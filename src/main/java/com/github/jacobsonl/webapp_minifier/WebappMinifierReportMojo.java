@@ -44,19 +44,8 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
     * lifecycle. If the goal is run indirectly as part of a site generation, the
     * output directory configured in the Maven Site Plugin is used instead.
     */
-   @Parameter(defaultValue = "${project.reporting.outputDirectory")
+   @Parameter(defaultValue = "${project.reporting.outputDirectory", required = true)
    private File outputDirectory;
-
-   /**
-    * Report output encoding. Note that this parameter is only relevant if the
-    * goal is run from the command line or from the default build lifecycle. If
-    * the goal is run indirectly as part of a site generation, the output
-    * encoding configured in the Maven Site Plugin is used instead.
-    * 
-    * @since 2.4
-    */
-   @Parameter(defaultValue = "${project.reporting.outputEncoding}")
-   private String outputEncoding;
 
    /**
     * Doxia Site Renderer.
@@ -70,10 +59,13 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
    @Component
    protected MavenProject project;
 
+   /** The content length formatter. */
    private DecimalFormat lengthFormatter;
 
+   /** The percent formatter. */
    private NumberFormat percentFormatter;
 
+   /** The processing time formatter. */
    private DecimalFormat timeFormatter;
 
    @Override
@@ -82,38 +74,39 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
    }
 
    @Override
-   public String getName(Locale locale) {
+   public String getName(final Locale locale) {
       return "Minification Report";
    }
 
    @Override
-   public String getDescription(Locale locale) {
+   public String getDescription(final Locale locale) {
       return "This report summarizes the minification results for this project.";
    }
 
    @Override
    protected Renderer getSiteRenderer() {
-      return siteRenderer;
+      return this.siteRenderer;
    }
 
    @Override
    protected String getOutputDirectory() {
-      return outputDirectory.getAbsolutePath();
+      return this.outputDirectory.getAbsolutePath();
    }
 
    @Override
    protected MavenProject getProject() {
-      return project;
+      return this.project;
    }
 
    @Override
-   protected void executeReport(Locale locale) throws MavenReportException {
+   protected void executeReport(final Locale locale)
+         throws MavenReportException {
       getLog().info("executeReport(" + locale + ")");
       initializeFormatters(locale);
 
       final MinificationSummary summary = loadSummary();
 
-      Sink sink = getSink();
+      final Sink sink = getSink();
       sink.head();
       sink.title();
       sink.text(getName(locale));
@@ -127,9 +120,9 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
       sink.sectionTitle1_();
       sink.text(getDescription(locale));
 
-      for (HtmlFileSummary htmlFile : summary.getHtmlFiles()) {
+      for (final HtmlFileSummary htmlFile : summary.getHtmlFiles()) {
 
-         Map<String, MutableInt> destCounts = getDestinationCounts(htmlFile
+         final Map<String, MutableInt> destCounts = getDestinationCounts(htmlFile
                .getMinifiedFiles());
          sink.section2();
          sink.sectionTitle2();
@@ -165,16 +158,16 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
          sink.tableHeaderCell_();
          sink.tableRow_();
 
-         Set<String> minifiers = new TreeSet<String>();
+         final Set<String> minifiers = new TreeSet<String>();
          int totalOriginalLength = 0;
          int totalMinifiedLength = 0;
          double totalTime = 0;
-         SinkEventAttributes centeredAttributes = new SinkEventAttributeSet();
+         final SinkEventAttributes centeredAttributes = new SinkEventAttributeSet();
          centeredAttributes.addAttribute(SinkEventAttributes.ALIGN, "center");
          centeredAttributes.addAttribute(SinkEventAttributes.ROWSPAN, 1);
-         SinkEventAttributes rightAttributes = new SinkEventAttributeSet();
+         final SinkEventAttributes rightAttributes = new SinkEventAttributeSet();
          rightAttributes.addAttribute(SinkEventAttributes.ALIGN, "right");
-         for (MinifiedFileMetrics metrics : htmlFile.getMinifiedFiles()) {
+         for (final MinifiedFileMetrics metrics : htmlFile.getMinifiedFiles()) {
             // A sample table row.
             sink.tableRow();
 
@@ -184,7 +177,7 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
 
             final String destination = metrics.getDestination();
             if (destCounts.containsKey(destination)) {
-               SinkEventAttributes destinationAttributes = new SinkEventAttributeSet(
+               final SinkEventAttributes destinationAttributes = new SinkEventAttributeSet(
                      centeredAttributes);
 
                if (!destination.equals(MinifiedFileMetrics.EMBEDDED_CSS)
@@ -207,24 +200,25 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
             final int originalLength = metrics.getOriginalLength();
             totalOriginalLength += originalLength;
             sink.tableCell(rightAttributes);
-            sink.text(lengthFormatter.format(originalLength));
+            sink.text(this.lengthFormatter.format(originalLength));
             sink.tableCell_();
 
             final int minifiedLength = metrics.getMinifiedLength();
             totalMinifiedLength += minifiedLength;
             sink.tableCell(rightAttributes);
-            sink.text(lengthFormatter.format(minifiedLength));
+            sink.text(this.lengthFormatter.format(minifiedLength));
             sink.tableCell_();
 
             sink.tableCell(rightAttributes);
-            sink.text(percentFormatter.format((originalLength - minifiedLength)
-                  / (float) originalLength));
+            sink.text(this.percentFormatter
+                  .format((originalLength - minifiedLength)
+                        / (float) originalLength));
             sink.tableCell_();
 
             final double time = metrics.getTime() / 1000000.0;
             totalTime += time;
             sink.tableCell(rightAttributes);
-            sink.text(timeFormatter.format(time));
+            sink.text(this.timeFormatter.format(time));
             sink.tableCell_();
 
             sink.tableRow_();
@@ -235,7 +229,7 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
             // Total the metrics.
             sink.tableRow();
 
-            SinkEventAttributes attributes = new SinkEventAttributeSet();
+            final SinkEventAttributes attributes = new SinkEventAttributeSet();
             attributes.addAttribute(SinkEventAttributes.COLSPAN, 2);
             sink.tableHeaderCell(attributes);
             sink.text("Total");
@@ -247,21 +241,21 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
             sink.tableCell_();
 
             sink.tableCell(rightAttributes);
-            sink.text(lengthFormatter.format(totalOriginalLength));
+            sink.text(this.lengthFormatter.format(totalOriginalLength));
             sink.tableCell_();
 
             sink.tableCell(rightAttributes);
-            sink.text(lengthFormatter.format(totalMinifiedLength));
+            sink.text(this.lengthFormatter.format(totalMinifiedLength));
             sink.tableCell_();
 
             sink.tableCell(rightAttributes);
-            sink.text(percentFormatter
+            sink.text(this.percentFormatter
                   .format((totalOriginalLength - totalMinifiedLength)
                         / (float) totalOriginalLength));
             sink.tableCell_();
 
             sink.tableCell(rightAttributes);
-            sink.text(timeFormatter.format(totalTime));
+            sink.text(this.timeFormatter.format(totalTime));
             sink.tableCell_();
 
             sink.tableRow_();
@@ -277,16 +271,18 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
       sink.close();
    }
 
-   protected void initializeFormatters(Locale locale) {
-      lengthFormatter = (DecimalFormat) NumberFormat.getIntegerInstance(locale);
-      lengthFormatter.setPositiveSuffix(" B");
-      percentFormatter = NumberFormat.getPercentInstance(locale);
-      percentFormatter.setMinimumFractionDigits(1);
-      percentFormatter.setMaximumFractionDigits(1);
-      timeFormatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
-      timeFormatter.setPositiveSuffix(" msec");
-      timeFormatter.setMinimumFractionDigits(1);
-      timeFormatter.setMaximumFractionDigits(1);
+   protected void initializeFormatters(final Locale locale) {
+      this.lengthFormatter = (DecimalFormat) NumberFormat
+            .getIntegerInstance(locale);
+      this.lengthFormatter.setPositiveSuffix(" B");
+      this.percentFormatter = NumberFormat.getPercentInstance(locale);
+      this.percentFormatter.setMinimumFractionDigits(1);
+      this.percentFormatter.setMaximumFractionDigits(1);
+      this.timeFormatter = (DecimalFormat) NumberFormat
+            .getNumberInstance(locale);
+      this.timeFormatter.setPositiveSuffix(" msec");
+      this.timeFormatter.setMinimumFractionDigits(1);
+      this.timeFormatter.setMaximumFractionDigits(1);
    }
 
    /**
@@ -298,10 +294,10 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
     * @return the mapping of destination to its reference count.
     */
    private Map<String, MutableInt> getDestinationCounts(
-         Collection<MinifiedFileMetrics> minifiedFiles) {
+         final Collection<MinifiedFileMetrics> minifiedFiles) {
       final Map<String, MutableInt> map = new HashMap<String, MutableInt>();
-      for (MinifiedFileMetrics metrics : minifiedFiles) {
-         MutableInt count = map.get(metrics.getDestination());
+      for (final MinifiedFileMetrics metrics : minifiedFiles) {
+         final MutableInt count = map.get(metrics.getDestination());
          if (count == null) {
             map.put(metrics.getDestination(), new MutableInt(1));
          } else {
@@ -322,10 +318,10 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
    protected MinificationSummary loadSummary() throws MavenReportException {
       final MinificationSummary summary;
       try {
-         JAXBContext context = JAXBContext
+         final JAXBContext context = JAXBContext
                .newInstance(MinificationSummary.class);
-         Unmarshaller unmarshaller = context.createUnmarshaller();
-         final File summaryFile = new File(outputDirectory,
+         final Unmarshaller unmarshaller = context.createUnmarshaller();
+         final File summaryFile = new File(this.outputDirectory,
                "webapp-minifier-summary.xml");
          if (summaryFile.exists()) {
             summary = (MinificationSummary) unmarshaller.unmarshal(summaryFile);
@@ -335,7 +331,7 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
                         + "' does not exist.");
             summary = new MinificationSummary();
          }
-      } catch (JAXBException e) {
+      } catch (final JAXBException e) {
          throw new MavenReportException(
                "Failed to read the minification summary", e);
       }

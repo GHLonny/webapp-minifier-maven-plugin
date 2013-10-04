@@ -5,7 +5,6 @@
             <artifactId>webapp-minifier-maven-plugin</artifactId>
             <configuration>
                <outputDirectory>${basedir}/target/test-yui-min</outputDirectory>
-               <outputEncoding>UTF-8</outputEncoding>
             </configuration>
          </plugin>
       </plugins>
