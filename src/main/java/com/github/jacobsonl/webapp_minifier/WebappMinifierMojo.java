@@ -50,7 +50,7 @@ import com.github.jacobsonl.webapp_minifier.utils.CommonUtils;
 import com.google.javascript.jscomp.CompilationLevel;
 
 /**
- * This mojo minifies web applications.
+ * Minifies the web application.
  */
 @Mojo(name = "webapp-minifier", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {

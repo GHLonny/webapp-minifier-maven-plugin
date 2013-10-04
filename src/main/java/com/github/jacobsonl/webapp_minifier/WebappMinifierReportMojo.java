@@ -32,8 +32,10 @@ import com.github.jacobsonl.webapp_minifier.summary.MinificationSummary;
 import com.github.jacobsonl.webapp_minifier.summary.MinifiedFileMetrics;
 
 /**
- * @author Lonny
+ * Generates a report summarizing the minification performed on the web
+ * application.
  * 
+ * @author Lonny
  */
 @Mojo(name = "webapp-minifier-report", threadSafe = true, defaultPhase = LifecyclePhase.SITE)
 public class WebappMinifierReportMojo extends AbstractMavenReport {
