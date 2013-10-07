@@ -36,12 +36,12 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
-import com.github.jacobsonl.webapp_minifier.options.OverridablePluginOptions;
 import com.github.jacobsonl.webapp_minifier.options.PluginOptions;
 import com.github.jacobsonl.webapp_minifier.replacer.TagReplacer;
 import com.github.jacobsonl.webapp_minifier.replacer.TagReplacerFactory;
@@ -52,8 +52,10 @@ import com.google.javascript.jscomp.CompilationLevel;
 /**
  * Minifies the web application.
  */
-@Mojo(name = "webapp-minifier", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+@Mojo(name = "minify-webapp", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
+   // @Execute(goal = "minify", lifecycle = "minify-cycle", phase =
+   // LifecyclePhase.PREPARE_PACKAGE)
 
    /**
     * The web application source directory.
@@ -64,7 +66,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    /**
     * The web application target directory.
     */
-   @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}-min", required = true)
+   @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}-minified", required = true)
    private File targetDirectory;
 
    /**
@@ -433,14 +435,28 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    }
 
    @Override
-   public OverridablePluginOptions.JavaScriptCompressor getJsCompressorEngine() {
+   public JavaScriptCompressor getJsCompressorEngine() {
       return this.jsCompressorEngine;
    }
 
    @Override
    public void setJsCompressorEngine(
-         final OverridablePluginOptions.JavaScriptCompressor jsCompressorEngine) {
+         final JavaScriptCompressor jsCompressorEngine) {
       this.jsCompressorEngine = jsCompressorEngine;
+
+   }
+
+   /**
+    * Sets the JavaScript compressor engine. This method was added for Maven 2
+    * compatibility.
+    * 
+    * @param jsCompressorEngine
+    *           the JavaScript compressor engine.
+    * @see #setJsCompressorEngine(JavaScriptCompressor)
+    */
+   public void setJsCompressorEngine(final String jsCompressorEngine) {
+      this.jsCompressorEngine = JavaScriptCompressor
+            .valueOf(jsCompressorEngine);
 
    }
 
@@ -453,6 +469,18 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    public void setClosureCompilationLevel(
          final CompilationLevel compilationLevel) {
       this.closureCompilationLevel = compilationLevel;
+   }
+
+   /**
+    * Sets the Google Closure compilation level. This method was added for Maven
+    * 2 compatibility.
+    * 
+    * @param compilationLevel
+    *           the compilation level.
+    * @see #setClosureCompilationLevel(CompilationLevel)
+    */
+   public void setClosureCompilationLevel(final String compilationLevel) {
+      this.closureCompilationLevel = CompilationLevel.valueOf(compilationLevel);
    }
 
    @Override
