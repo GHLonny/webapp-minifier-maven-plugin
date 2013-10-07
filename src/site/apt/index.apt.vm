@@ -15,17 +15,27 @@ Webapp Minifier Maven Plugin
 +-----+
 <project>
    ...
+   <packaging>war</packaging>
+   ...
    <build>
       <plugins>
          <plugin>
             <groupId>${project.groupId}</groupId>
             <artifactId>${project.artifactId}</artifactId>
             <version>${project.version}</version>
+            <executions>
+               <execution>
+                  <id>Minify the web application</id>
+                  <goals>
+                     <goal>minify-webapp</goal>
+                  </goals>
+               </execution>
+            </executions>
          </plugin>
          <plugin>
             <artifactId>maven-war-plugin</artifactId>
             <configuration>
-               <warSourceDirectory>\${project.build.directory}/\${project.build.finalName}-min</warSourceDirectory>
+               <warSourceDirectory>\${project.build.directory}/\${project.build.finalName}-minified</warSourceDirectory>
             </configuration>
          </plugin>
       </plugins>
@@ -34,7 +44,7 @@ Webapp Minifier Maven Plugin
 +-----+
 
  By default, the plugin creates the minified web application in the 
- <<<$\{project.build.directory\}/$\{project.build.finalName\}-min>>> directory. You must
+ <<<$\{project.build.directory\}/$\{project.build.finalName\}-minified>>> directory. You must
  point the war plugin (or whatever you're using to generate your war) to that
  directory.
 
