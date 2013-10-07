@@ -8,7 +8,7 @@
       <version>7</version>
    </parent>
 
-   <groupId>com.github.jacobsonl</groupId>
+   <groupId>com.lonnyjacobson</groupId>
    <artifactId>webapp-minifier-maven-plugin</artifactId>
    <version>0.9.0-SNAPSHOT</version>
    <packaging>maven-plugin</packaging>

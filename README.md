@@ -14,9 +14,9 @@ Here is a basic configuration to get you started:
    <build>
       <plugins>
          <plugin>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${project.artifactId}</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.lonnyjacobson</groupId>
+            <artifactId>webapp-minifier-maven-plugin</artifactId>
+            <version>0.9.0</version>
             <executions>
                <execution>
                   <id>Minify the web application</id>
