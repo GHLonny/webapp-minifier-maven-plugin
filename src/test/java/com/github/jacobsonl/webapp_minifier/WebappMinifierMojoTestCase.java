@@ -22,7 +22,7 @@ public class WebappMinifierMojoTestCase extends AbstractMojoTestCase {
       assertTrue(pom + " does not exist", pom.exists());
 
       final WebappMinifierMojo myMojo = (WebappMinifierMojo) lookupMojo(
-            "webapp-minifier", pom);
+            "minify-webapp", pom);
       assertNotNull(myMojo);
       myMojo.execute();
    }
@@ -37,7 +37,7 @@ public class WebappMinifierMojoTestCase extends AbstractMojoTestCase {
       assertTrue(pom + " does not exist", pom.exists());
 
       final WebappMinifierMojo myMojo = (WebappMinifierMojo) lookupMojo(
-            "webapp-minifier", pom);
+            "minify-webapp", pom);
       assertNotNull(myMojo);
       myMojo.execute();
    }
@@ -52,24 +52,24 @@ public class WebappMinifierMojoTestCase extends AbstractMojoTestCase {
       assertTrue(pom + " does not exist", pom.exists());
 
       final WebappMinifierMojo myMojo = (WebappMinifierMojo) lookupMojo(
-            "webapp-minifier", pom);
+            "minify-webapp", pom);
       assertNotNull(myMojo);
       myMojo.execute();
 
       // Ensure that none of the generated files contain "/test1".
-      File[] backupFiles = myMojo.getTargetDirectory().listFiles(
+      final File[] backupFiles = myMojo.getTargetDirectory().listFiles(
             new FilenameFilter() {
                @Override
-               public boolean accept(File arg0, String arg1) {
+               public boolean accept(final File arg0, final String arg1) {
                   return arg1.endsWith(".bak");
                }
             });
-      for (File backupFile : backupFiles) {
+      for (final File backupFile : backupFiles) {
          final String name = backupFile.getName();
-         File file = new File(backupFile.getParentFile(),
+         final File file = new File(backupFile.getParentFile(),
                FileUtils.removeExtension(name));
          assertTrue(file + " should exist", file.exists());
-         String contents = FileUtils.fileRead(file, myMojo.getEncoding());
+         final String contents = FileUtils.fileRead(file, myMojo.getEncoding());
          assertFalse(file + " should not contain '/test1'",
                contents.contains("/test1"));
       }
