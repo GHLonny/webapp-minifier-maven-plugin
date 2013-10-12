@@ -1,0 +1,55 @@
+Configuring Inline
+
+* Introduction
+
+ The Webapp Minifier plugin allows for some configuration to be overridden 
+ inside the HTML by leveraging comment tags. These comment tags must include 
+ the option override header "<<<${project.artifactId}:>>>". The configuration 
+ is parsed like Java 
+ {{{http://docs.oracle.com/javase/6/docs/api/java/util/Properties.html#load(java.io.Reader)}properties}}
+ and remains in affect for the duration of the 
+ file. The next file will start with the original plugin's configuration.
+
+* Configuration
+
+ For single parameter changes, you can leave it all on the same line like this:
+
++-----+
+<!-- ${project.artifactId}: skipCssMinify=true -->
++-----+
+
+ For multiple parameter changes, you must break them up into separate lines:
+ 
++-----+
+<!--
+${project.artifactId}: 
+jsCompressorEngine=CLOSURE
+closureCompilationLevel=ADVANCED_OPTIMIZATIONS
+-->
++-----+
+
+* Commenting
+
+ Any comments may appear prior to the option override header.
+
++-----+
+<!--
+Break after every 1000 characters.
+${project.artifactId}: yuiCssLineBreak=1000
+-->
++-----+
+
+ After the option override header, the remainder of the tag's content is parsed
+ using Java's Properties class. A comment line starts with either a '<<<#>>>' 
+ or '<<<!>>>'.
+
++-----+
+<!--
+${project.artifactId}:
+! Switch to Google's Closure compiler.
+jsCompressorEngine=CLOSURE
+# The remaining JS compresses best with the advanced optimizations.
+closureCompilationLevel=ADVANCED_OPTIMIZATIONS
+-->
++-----+
+ 

@@ -7,6 +7,9 @@
          <item name="Introduction" href="index.html" />
          <item name="Goals" href="plugin-info.html" />
       </menu>
+      <menu name="Advanced Configuration">
+         <item name="Configuring Inline" href="configuring-inline.html"/>
+      </menu>
       <menu ref="reports" inherit="top" />
    </body>
    <skin>
