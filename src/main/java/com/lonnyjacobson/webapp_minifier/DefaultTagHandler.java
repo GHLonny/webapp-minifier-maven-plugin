@@ -191,6 +191,7 @@ public class DefaultTagHandler implements NodeHandler {
    public boolean handleComment(final String text) throws ParseOptionException {
       this.log.debug("Handling comment '" + text + "'");
 
+      // TODO: Add plugin directives for other options.
       if (this.optionsParser.containsOptionsHeader(text)) {
          this.options = this.optionsParser.parse(text,
                new DefaultOverridablePluginOptions(this.options));

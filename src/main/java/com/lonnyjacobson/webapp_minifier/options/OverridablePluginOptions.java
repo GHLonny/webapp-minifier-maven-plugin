@@ -9,13 +9,6 @@ import com.google.javascript.jscomp.CompilationLevel;
  */
 public interface OverridablePluginOptions {
    /**
-    * The JavaScript Compressor types.
-    */
-   enum JavaScriptCompressor {
-      CLOSURE, YUI;
-   }
-
-   /**
     * Indicates if CSS minification should be skipped.
     * 
     * @return <code>true</code> if CSS minification should be skipped.
@@ -117,7 +110,7 @@ public interface OverridablePluginOptions {
     * 
     * @return the JavaScript compressor engine.
     */
-   OverridablePluginOptions.JavaScriptCompressor getJsCompressorEngine();
+   JavaScriptCompressor getJsCompressorEngine();
 
    /**
     * Sets the JavaScript compressor engine.
@@ -126,7 +119,7 @@ public interface OverridablePluginOptions {
     *           the JavaScript compressor engine.
     */
    void setJsCompressorEngine(
-         OverridablePluginOptions.JavaScriptCompressor jsCompressorEngine);
+         JavaScriptCompressor jsCompressorEngine);
 
    /**
     * Returns the Google Closure compilation level.

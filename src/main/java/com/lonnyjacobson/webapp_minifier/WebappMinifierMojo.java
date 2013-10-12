@@ -43,6 +43,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 import com.google.javascript.jscomp.CompilationLevel;
+import com.lonnyjacobson.webapp_minifier.options.JavaScriptCompressor;
 import com.lonnyjacobson.webapp_minifier.options.PluginOptions;
 import com.lonnyjacobson.webapp_minifier.replacer.TagReplacer;
 import com.lonnyjacobson.webapp_minifier.replacer.TagReplacerFactory;
@@ -59,23 +60,28 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * The web application source directory.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "${basedir}/src/main/webapp", required = true)
    private File sourceDirectory;
 
    /**
     * The web application target directory.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}-minified", required = true)
    private File targetDirectory;
 
    /**
-    * The HTML document parser.
-    * <p>
+    * The HTML document parser. <br/>
     * Possible values are:
     * <ul>
     * <li>jsoup
     * </ul>
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "jsoup", required = true, readonly = true)
    private String parser;
@@ -84,80 +90,115 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    private TagReplacer tagReplacer;
 
    /**
-    * The HTML files to include in processing.
-    * <p>
+    * The HTML files to include in processing. <br/>
     * <b>Default values are:</b>
     * <ul>
     * <li>**&#47;*.html
     * <li>**&#47;*.htm
     * <li>**&#47;*.jsp
     * </ul>
+    * 
+    * @since 1.0
     */
    @Parameter
    private String[] htmlIncludes;
 
    /**
     * The HTML files to exclude from processing.
+    * 
+    * @since 1.0
     */
    @Parameter
    private String[] htmlExcludes;
 
    /**
     * Skips any minification processing.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean skipMinify;
 
    /**
-    * Skips CSS minification.
+    * Skips CSS minification.<br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean skipCssMinify;
 
    /**
-    * Skips Embedded CSS minification.
+    * Skips Embedded CSS minification.<br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean skipEmbeddedCssMinify;
 
    /**
-    * Skips JavaScript minification.
+    * Skips JavaScript minification.<br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean skipJsMinify;
 
    /**
-    * Skips Embedded JavaScript minification.
+    * Skips Embedded JavaScript minification.<br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean skipEmbeddedJsMinify;
 
    /**
-    * Merges embedded CSS with externally minified CSS.
+    * Merges embedded CSS with externally minified CSS. <br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean mergeEmbeddedCss;
 
    /**
-    * Merges embedded JavaScript with externally minified JavaScript.
+    * Merges embedded JavaScript with externally minified JavaScript. <br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean mergeEmbeddedJs;
 
    /**
     * The character encoding used for HTML, JavScript and CSS files.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
    private String encoding;
 
    /**
     * The prefix for minified CSS files.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "css")
    private String cssPrefix = "css";
 
    /**
     * The prefix for minified JavaScript files.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "js")
    private String jsPrefix = "js";
@@ -166,8 +207,8 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * Defines other directories where CSS and JavaScript files may be found.
     * This is useful when other projects contain common CSS and JavaScript. The
     * name should be a location as defined in the HTML. The value would be the
-    * directory that corresponds to the location.
-    * <p>
+    * directory that corresponds to the location. <br/>
+    * <br/>
     * For example,
     * 
     * <pre>
@@ -178,6 +219,8 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     *   &lt;/property>
     * &lt;/otherDirectories>
     * </pre>
+    * 
+    * @since 1.0
     */
    @Parameter
    private final Properties otherDirectories = new Properties();
@@ -191,12 +234,19 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * <li><b>YUI</b> - The <a href="http://yui.github.io/yuicompressor/">YUI
     * Compressor</a>.
     * </ul>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "YUI")
    private JavaScriptCompressor jsCompressorEngine = JavaScriptCompressor.YUI;
 
    /**
-    * The Google Closure compiler level.
+    * The Google Closure compiler level.<br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "SIMPLE_OPTIMIZATIONS")
    private CompilationLevel closureCompilationLevel = CompilationLevel.SIMPLE_OPTIMIZATIONS;
@@ -208,13 +258,20 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * <li><b>-1</b> - Disables line breaking.
     * <li><b>0</b> - Causes a line break after each rule in CSS.
     * </ul>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "-1")
    private int yuiCssLineBreak = -1;
 
    /**
     * Instructs the YUI Compressor to disable all JavaScript
-    * micro-optimizations.
+    * micro-optimizations.<br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean yuiJsDisableOptimizations;
@@ -226,13 +283,20 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * <li><b>-1</b> - Disables line breaking.
     * <li><b>0</b> - Causes a line break after each semi-colon in JavaScript.
     * </ul>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "-1")
    private int yuiJsLineBreak = -1;
 
    /**
     * Instructs the YUI Compressor to only minify JavaScript without obfuscating
-    * local symbols.
+    * local symbols.<br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean yuiJsNoMunge;
@@ -240,13 +304,16 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    /**
     * Instructs the YUI Compressor to preserve unnecessary semicolons in
     * JavaScript. This option is useful when compressed code has to be run
-    * through JSLint.
+    * through JSLint.<br/>
+    * <br/>
+    * <b>NOTE:</b> This option can be overridden inline.
+    * 
+    * @since 1.0
     */
    @Parameter(defaultValue = "false")
    private boolean yuiJsPreserveAllSemiColons;
 
    /**
-    * 
     * @see org.apache.maven.plugin.AbstractMojo#execute()
     */
    @Override

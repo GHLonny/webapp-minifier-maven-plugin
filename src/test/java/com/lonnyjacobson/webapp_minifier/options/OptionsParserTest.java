@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.google.javascript.jscomp.CompilationLevel;
-import com.lonnyjacobson.webapp_minifier.options.OverridablePluginOptions.JavaScriptCompressor;
 
 /**
  * This class tests {@link OptionsParser}.

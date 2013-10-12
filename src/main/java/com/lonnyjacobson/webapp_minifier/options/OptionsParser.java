@@ -14,7 +14,6 @@ import org.codehaus.plexus.util.IOUtil;
 
 import com.google.common.base.Preconditions;
 import com.google.javascript.jscomp.CompilationLevel;
-import com.lonnyjacobson.webapp_minifier.options.OverridablePluginOptions.JavaScriptCompressor;
 
 /**
  * This class parses plugin options from input.
@@ -23,11 +22,12 @@ import com.lonnyjacobson.webapp_minifier.options.OverridablePluginOptions.JavaSc
  */
 public class OptionsParser {
    /** The string indicating options to be parsed. */
-   public static final String OPTION_HEADER = "webapp-minifier-maven-plugin";
+   public static final String OPTION_HEADER = "webapp-minifier-maven-plugin:";
 
    /** The log instance. */
    private final Log log;
 
+   /** Handles setting properties in the options instance. */
    private BeanUtilsBean beanUtils;
 
    /**
@@ -40,6 +40,7 @@ public class OptionsParser {
       this.log = log;
       final ConvertUtilsBean convertUtilsBean = new ConvertUtilsBean();
       final Converter compilationLevelConverter = new Converter() {
+         @SuppressWarnings("rawtypes")
          @Override
          public Object convert(final Class type, final Object value) {
             return CompilationLevel.valueOf((String) value);
@@ -48,6 +49,7 @@ public class OptionsParser {
       convertUtilsBean.register(compilationLevelConverter,
             CompilationLevel.class);
       final Converter jsCompressorConverter = new Converter() {
+         @SuppressWarnings("rawtypes")
          @Override
          public Object convert(final Class type, final Object value) {
             return JavaScriptCompressor.valueOf((String) value);
@@ -112,6 +114,8 @@ public class OptionsParser {
             properties.load(reader);
             for (final Entry<Object, Object> entry : properties.entrySet()) {
                try {
+                  this.log.debug("Setting " + entry.getKey() + " to "
+                        + entry.getValue());
                   this.beanUtils.setProperty(options, (String) entry.getKey(),
                         entry.getValue());
                } catch (final Exception e) {
