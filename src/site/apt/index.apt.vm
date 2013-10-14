@@ -49,6 +49,6 @@ Webapp Minifier Maven Plugin
  directory.
 
  Once you have that working, head over to the 
- {{{./webapp-minifier-mojo.html}goal configuration}} to customize the plugin's
+ {{{./plugin-info.html}goal configuration}} to customize the plugin's
  behavior.
 
