@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>Webapp Minifier Maven Plugin - Checkstyle report</title>
+    <link>https://github.com/GHLonny/webapp-minifier-maven-plugin</link>
+    <description>Webapp Minifier Maven Plugin - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2013</copyright>
+    <item>
+      <title>File: 26,
+             Errors: 424,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.utils.CommonUtils.java">com/lonnyjacobson/webapp_minifier/utils/CommonUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.summary.MinifiedFileMetrics.java">com/lonnyjacobson/webapp_minifier/summary/MinifiedFileMetrics.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  30
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.options.PluginOptions.java">com/lonnyjacobson/webapp_minifier/options/PluginOptions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  13
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.options.ParseOptionException.java">com/lonnyjacobson/webapp_minifier/options/ParseOptionException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.summary.MinificationSummary.java">com/lonnyjacobson/webapp_minifier/summary/MinificationSummary.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.utils.package-info.java">com/lonnyjacobson/webapp_minifier/utils/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.options.OptionsParser.java">com/lonnyjacobson/webapp_minifier/options/OptionsParser.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.options.OverridablePluginOptions.java">com/lonnyjacobson/webapp_minifier/options/OverridablePluginOptions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  28
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.replacer.NodeHandler.java">com/lonnyjacobson/webapp_minifier/replacer/NodeHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.options.package-info.java">com/lonnyjacobson/webapp_minifier/options/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.options.JavaScriptCompressor.java">com/lonnyjacobson/webapp_minifier/options/JavaScriptCompressor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.DefaultTagHandler.java">com/lonnyjacobson/webapp_minifier/DefaultTagHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  51
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.summary.HtmlFileSummary.java">com/lonnyjacobson/webapp_minifier/summary/HtmlFileSummary.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.WebappMinifierReportMojo.java">com/lonnyjacobson/webapp_minifier/WebappMinifierReportMojo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  26
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.WebappMinifierMojo.java">com/lonnyjacobson/webapp_minifier/WebappMinifierMojo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  92
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.MinifiedFileInfo.java">com/lonnyjacobson/webapp_minifier/MinifiedFileInfo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.MinificationContext.java">com/lonnyjacobson/webapp_minifier/MinificationContext.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.replacer.ReplacerException.java">com/lonnyjacobson/webapp_minifier/replacer/ReplacerException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.summary.package-info.java">com/lonnyjacobson/webapp_minifier/summary/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.replacer.TagReplacerFactory.java">com/lonnyjacobson/webapp_minifier/replacer/TagReplacerFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.replacer.package-info.java">com/lonnyjacobson/webapp_minifier/replacer/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.package-info.java">com/lonnyjacobson/webapp_minifier/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.options.DefaultOverridablePluginOptions.java">com/lonnyjacobson/webapp_minifier/options/DefaultOverridablePluginOptions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  33
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.MinifiedFileBuilder.java">com/lonnyjacobson/webapp_minifier/MinifiedFileBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.replacer.TagReplacer.java">com/lonnyjacobson/webapp_minifier/replacer/TagReplacer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/GHLonny/webapp-minifier-maven-plugin/checkstyle.html#com.lonnyjacobson.webapp_minifier.replacer.JsoupTagReplacer.java">com/lonnyjacobson/webapp_minifier/replacer/JsoupTagReplacer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  33
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
