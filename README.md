@@ -41,3 +41,5 @@ Here is a basic configuration to get you started:
  `${project.build.directory}/${project.build.finalName}-minified` directory. You must
  point the war plugin (or whatever you're using to generate your war) to that
  directory.
+ 
+ Once you have that working, head over to the [plugin documentation](http://ghlonny.github.io/webapp-minifier-maven-plugin/).
