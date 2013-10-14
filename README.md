@@ -42,4 +42,4 @@ Here is a basic configuration to get you started:
  point the war plugin (or whatever you're using to generate your war) to that
  directory.
  
- Once you have that working, head over to the [plugin documentation](http://ghlonny.github.io/webapp-minifier-maven-plugin/).
+ Once you have that working, head over to the [plugin documentation](http://ghlonny.github.io/webapp-minifier-maven-plugin/) to customize the plugin's behavior.
