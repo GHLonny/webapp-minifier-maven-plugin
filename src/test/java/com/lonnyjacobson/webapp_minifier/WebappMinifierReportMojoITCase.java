@@ -9,14 +9,12 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
  * 
  * @author Lonny
  */
-public class WebappMinifierReportMojoTestCase extends AbstractMojoTestCase {
+public class WebappMinifierReportMojoITCase extends AbstractMojoTestCase {
    /**
     * @throws Exception
     *            if any
     */
    public void testClosureReport() throws Exception {
-      // TODO: This is bad mojo but use it temporarily.
-      Thread.sleep(2000);
       final File pom = getTestFile("src/test/resources/report-tests/test-closure.xml");
       assertNotNull(pom);
       assertTrue(pom + " does not exist", pom.exists());
@@ -32,8 +30,6 @@ public class WebappMinifierReportMojoTestCase extends AbstractMojoTestCase {
     *            if any
     */
    public void testYuiReport() throws Exception {
-      // TODO: This is bad mojo but use it temporarily.
-      Thread.sleep(2000);
       final File pom = getTestFile("src/test/resources/report-tests/test-yui.xml");
       assertNotNull(pom);
       assertTrue(pom + " does not exist", pom.exists());
