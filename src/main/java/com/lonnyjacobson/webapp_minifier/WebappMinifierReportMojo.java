@@ -72,7 +72,7 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
 
    @Override
    public String getOutputName() {
-      return "WebappMinifier";
+      return "webapp-minifier";
    }
 
    @Override

@@ -1,19 +1,21 @@
 package com.lonnyjacobson.webapp_minifier.options;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Map.Entry;
-import java.util.Properties;
-
-import org.apache.commons.beanutils.BeanUtilsBean;
-import org.apache.commons.beanutils.ConvertUtilsBean;
-import org.apache.commons.beanutils.Converter;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.util.IOUtil;
 
 import com.google.common.base.Preconditions;
-import com.google.javascript.jscomp.CompilationLevel;
+import com.lonnyjacobson.webapp_minifier.antlr.PluginInlineConfigurationBaseListener;
+import com.lonnyjacobson.webapp_minifier.antlr.PluginInlineConfigurationLexer;
+import com.lonnyjacobson.webapp_minifier.antlr.PluginInlineConfigurationListener;
+import com.lonnyjacobson.webapp_minifier.antlr.PluginInlineConfigurationParser;
+import com.lonnyjacobson.webapp_minifier.antlr.PluginInlineConfigurationParser.DirectiveContext;
+import com.lonnyjacobson.webapp_minifier.antlr.PluginInlineConfigurationParser.KeyValueContext;
+import com.lonnyjacobson.webapp_minifier.antlr.PluginInlineConfigurationParser.SeparatorAndValueContext;
 
 /**
  * This class parses plugin options from input.
@@ -27,9 +29,6 @@ public class OptionsParser {
    /** The log instance. */
    private final Log log;
 
-   /** Handles setting properties in the options instance. */
-   private BeanUtilsBean beanUtils;
-
    /**
     * Constructs a new <code>OptionsParser</code> using the given log instance.
     * 
@@ -38,26 +37,6 @@ public class OptionsParser {
     */
    public OptionsParser(final Log log) {
       this.log = log;
-      final ConvertUtilsBean convertUtilsBean = new ConvertUtilsBean();
-      final Converter compilationLevelConverter = new Converter() {
-         @SuppressWarnings("rawtypes")
-         @Override
-         public Object convert(final Class type, final Object value) {
-            return CompilationLevel.valueOf((String) value);
-         }
-      };
-      convertUtilsBean.register(compilationLevelConverter,
-            CompilationLevel.class);
-      final Converter jsCompressorConverter = new Converter() {
-         @SuppressWarnings("rawtypes")
-         @Override
-         public Object convert(final Class type, final Object value) {
-            return JavaScriptCompressor.valueOf((String) value);
-         }
-      };
-      convertUtilsBean.register(jsCompressorConverter,
-            JavaScriptCompressor.class);
-      this.beanUtils = new BeanUtilsBean(convertUtilsBean);
    }
 
    /**
@@ -72,63 +51,66 @@ public class OptionsParser {
    }
 
    /**
-    * Parses options from a <code>String</code> and creates a new options object
-    * from them.
+    * Parses options from a <code>String</code> and creates a new options object from them.
     * 
     * @param text
     *           the text to parse.
-    * @return the new options instance.
+    * @param optionHandler
+    *           the handler for parsed options.
     * @throws ParseOptionException
-    *            if unable to parse the options or if an unsupported option is
-    *            received.
+    *            if unable to parse the options or if an unsupported option is received.
     */
-   public OverridablePluginOptions parse(final String text)
+   public void parse(final String text, final OptionHandler optionHandler)
          throws ParseOptionException {
-      return parse(text, new DefaultOverridablePluginOptions());
-   }
-
-   /**
-    * Parses options from a <code>String</code> and creates a new options object
-    * from them.
-    * 
-    * @param text
-    *           the text to parse.
-    * @param options
-    *           the destination for the parsed options.
-    * @return the new options instance.
-    * @throws ParseOptionException
-    *            if unable to parse the options or if an unsupported option is
-    *            received.
-    */
-   public OverridablePluginOptions parse(final String text,
-         final OverridablePluginOptions options) throws ParseOptionException {
       Preconditions.checkNotNull(text, "The text cannot be null");
-      Preconditions.checkNotNull(options, "The options cannot be null");
+      Preconditions.checkNotNull(optionHandler, "The option handler cannot be null");
 
       int index = text.indexOf(OPTION_HEADER);
       if (index >= 0) {
          index += OPTION_HEADER.length();
-         final Properties properties = new Properties();
-         final StringReader reader = new StringReader(text.substring(index));
          try {
-            properties.load(reader);
-            for (final Entry<Object, Object> entry : properties.entrySet()) {
-               try {
-                  this.log.debug("Setting " + entry.getKey() + " to "
-                        + entry.getValue());
-                  this.beanUtils.setProperty(options, (String) entry.getKey(),
-                        entry.getValue());
-               } catch (final Exception e) {
-                  throw new ParseOptionException(
-                        "An error occurred while handling option " + entry, e);
+            final ANTLRInputStream input = new ANTLRInputStream(text.substring(index));
+            final PluginInlineConfigurationLexer lexer = new PluginInlineConfigurationLexer(input);
+            final TokenStream tokenInput = new CommonTokenStream(lexer);
+            final PluginInlineConfigurationParser parser = new PluginInlineConfigurationParser(
+                  tokenInput);
+            final PluginInlineConfigurationListener listener = new PluginInlineConfigurationBaseListener() {
+               @Override
+               public void exitDirective(final DirectiveContext context) {
+                  final TerminalNode child = (TerminalNode) context.getChild(0);
+                  final String directive = child.getText();
+                  OptionsParser.this.log.debug("Handling " + directive);
+                  switch (child.getSymbol().getType()) {
+                  case PluginInlineConfigurationLexer.SPLITCSS:
+                     optionHandler.splitCss();
+                     break;
+                  case PluginInlineConfigurationLexer.SPLITJS:
+                     optionHandler.splitJavaScript();
+                     break;
+                  default:
+                     throw new IllegalStateException("Unrecognized directive: " + directive);
+                  }
                }
-            }
-         } catch (final IOException e) {
+
+               @Override
+               public void exitKeyValue(final KeyValueContext ctx) {
+                  final String key = ctx.getChild(0).getText();
+                  final SeparatorAndValueContext separatorAndValueContext = (SeparatorAndValueContext) ctx
+                        .getChild(1);
+                  final String value = separatorAndValueContext.getChild(1).getText();
+                  OptionsParser.this.log.debug("Handling " + key + '=' + value);
+                  try {
+                     optionHandler.handleOption(key, value);
+                  } catch (final ParseOptionException e) {
+                     throw new RuntimeException(e);
+                  }
+               }
+            };
+            parser.addParseListener(listener);
+            parser.parse();
+         } catch (final RecognitionException e) {
             throw new ParseOptionException(e);
-         } finally {
-            IOUtil.close(reader);
          }
       }
-      return options;
    }
 }

@@ -8,7 +8,9 @@
          <item name="Goals" href="plugin-info.html" />
       </menu>
       <menu name="Advanced Configuration">
-         <item name="Configuring Inline" href="configuring-inline.html"/>
+         <item name="Inline Configuration" href="inline-configuration.html"/>
+         <item name="Directives" href="directives.html"/>
+         <item name="Comments" href="comments.html"/>
       </menu>
       <menu ref="reports" inherit="top" />
    </body>

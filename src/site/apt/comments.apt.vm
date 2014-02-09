@@ -1,0 +1,35 @@
+Commenting
+
+ When defining {{{inline-configuration.html}inline configuration}} or 
+ {{{directives.html}directives}}, it is also allowed to include non-interpreted comments.
+
+* XML Comments
+
+ The plugin ignores XML comments tags until the option override header
+ "<<<${project.artifactId}:>>>".  The following are both acceptable.
+
++-----+
+<!-- Your comment -->
++-----+
+
++-----+
+<!--
+Break after every 1000 characters.
+${project.artifactId}: yuiCssLineBreak=1000
+-->
++-----+
+
+* Java Properties Comments
+
+ After the option override header, the remainder of the tag's content is parsed by the plugin in a 
+ manner similar to Java Properties. A comment line starts with either a '<<<#>>>' or '<<<!>>>'.
+
++-----+
+<!--
+${project.artifactId}:
+! Switch to Google's Closure compiler.
+jsCompressorEngine=CLOSURE
+# The remaining JS compresses best with the advanced optimizations.
+closureCompilationLevel=ADVANCED_OPTIMIZATIONS
+-->
++-----+

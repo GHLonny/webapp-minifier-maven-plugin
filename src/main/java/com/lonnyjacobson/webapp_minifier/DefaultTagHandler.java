@@ -22,6 +22,7 @@ import com.googlecode.htmlcompressor.compressor.Compressor;
 import com.googlecode.htmlcompressor.compressor.YuiCssCompressor;
 import com.googlecode.htmlcompressor.compressor.YuiJavaScriptCompressor;
 import com.lonnyjacobson.webapp_minifier.options.DefaultOverridablePluginOptions;
+import com.lonnyjacobson.webapp_minifier.options.OptionHandler;
 import com.lonnyjacobson.webapp_minifier.options.OptionsParser;
 import com.lonnyjacobson.webapp_minifier.options.OverridablePluginOptions;
 import com.lonnyjacobson.webapp_minifier.options.ParseOptionException;
@@ -111,8 +112,10 @@ public class DefaultTagHandler implements NodeHandler {
     */
    protected ClosureJavaScriptCompressor createClosureJsCompressor(
          final OverridablePluginOptions options) {
-      return new ClosureJavaScriptCompressor(
+      final ClosureJavaScriptCompressor closureJavaScriptCompressor = new ClosureJavaScriptCompressor(
             options.getClosureCompilationLevel());
+      // TODO: Allow overriding of Closure compiler options.
+      return closureJavaScriptCompressor;
    }
 
    /**
@@ -193,8 +196,8 @@ public class DefaultTagHandler implements NodeHandler {
 
       // TODO: Add plugin directives for other options.
       if (this.optionsParser.containsOptionsHeader(text)) {
-         this.options = this.optionsParser.parse(text,
-               new DefaultOverridablePluginOptions(this.options));
+         final OptionHandler optionHandler = new OptionHandler(this.options);
+         this.optionsParser.parse(text, optionHandler);
          this.cssContext.setCompressor(createCssCompressor(this.options));
          this.jsContext.setCompressor(createJavaScriptCompressor(this.options));
          this.jsContext.setMinifier(this.options.getJsCompressorEngine()

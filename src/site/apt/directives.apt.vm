@@ -1,0 +1,48 @@
+Directives
+
+ The Webapp Minifier plugin allows for directives to be placed directly in the HTML via comment 
+ tags. These directives cause the plugin to perform certain actions at the given point. As with
+ configuring inline, the comment tags must include the option override header
+ "<<<${project.artifactId}:>>>".
+ 
+* Configuration
+
+ Directives available for this plugin:
+ 
+*----------------------+------------------------------------------------------------+
+| <<Directive>>        | <<Description>>                                            |
+*----------------------+------------------------------------------------------------+
+| {{split-css}}        | Causes the CSS minification to start in a new file.        |
+*----------------------+------------------------------------------------------------+
+| {{split-javascript}} | Causes the JavaScript minification to start in a new file. |
+*----------------------+------------------------------------------------------------+
+
+* {split-css}
+
+ The <<<split-css>>> directive causes the plugin to close the previous minified CSS file and start
+ a new one. All of the minified CSS prior to the directive will go into one 
+ file (e.g. css-1.css). While everything following the directive will go into another 
+ (e.g. css-2.css).
+
++-----+
+<link rel="stylesheet" type="text/css" href="some-large-css.css" />
+<!--
+${project.artifactId}: split-css
+-->
+<link rel="stylesheet" type="text/css" href="some-other-large-css.css" />
++-----+
+
+* {split-javascript}
+
+ The <<<split-javascript>>> directive causes the plugin to close the previous minified JavaScript
+ file and start a new one. All of the minified JavaScript prior to the directive will go into one 
+ file (e.g. js-1.js). While everything following the directive will go into another (e.g. js-2.js).
+
++-----+
+<script type="text/javascript" src="some-large-javascript.js"></script>
+<!--
+${project.artifactId}: split-javascript
+-->
+<script type="text/javascript" src="some-other-large-javascript.js"></script>
++-----+
+ 

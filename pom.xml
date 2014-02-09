@@ -10,7 +10,7 @@
 
    <groupId>com.lonnyjacobson</groupId>
    <artifactId>webapp-minifier-maven-plugin</artifactId>
-   <version>0.9.0-SNAPSHOT</version>
+   <version>0.10.0-SNAPSHOT</version>
    <packaging>maven-plugin</packaging>
 
    <name>Webapp Minifier Maven Plugin</name>
@@ -65,15 +65,31 @@
       <repository.name>${project.artifactId}</repository.name>
 
       <!-- Plugin Versions -->
+      <antlr4-maven-plugin.version>4.2</antlr4-maven-plugin.version>
+      <build-helper-maven-plugin.version>1.8</build-helper-maven-plugin.version>
       <maven-changelog-plugin.version>2.2</maven-changelog-plugin.version>
       <maven-changes-plugin.version>2.9</maven-changes-plugin.version>
       <maven-failsafe-plugin.version>${maven-surefire-plugin.version}</maven-failsafe-plugin.version>
       <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
       <maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
       <versions-maven-plugin.version>2.1</versions-maven-plugin.version>
+
+      <!-- Dependency Versions -->
+      <antlr.version>4.2</antlr.version>
    </properties>
 
    <dependencies>
+      <dependency>
+         <groupId>commons-beanutils</groupId>
+         <artifactId>commons-beanutils</artifactId>
+         <version>1.9.1</version>
+         <exclusions>
+            <exclusion>
+               <artifactId>commons-logging</artifactId>
+               <groupId>commons-logging</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
       <dependency>
          <groupId>commons-lang</groupId>
          <artifactId>commons-lang</artifactId>
@@ -100,6 +116,17 @@
          <version>2.4.7</version>
          <scope>runtime</scope>
       </dependency>
+      <dependency>
+         <groupId>org.antlr</groupId>
+         <artifactId>antlr4-runtime</artifactId>
+         <version>${antlr.version}</version>
+         <exclusions>
+            <exclusion>
+               <artifactId>org.abego.treelayout.core</artifactId>
+               <groupId>org.abego.treelayout</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
       <!-- This dependency must appear before maven-reporting-impl in the 
          classpath. -->
       <dependency>
@@ -112,6 +139,16 @@
          <groupId>org.apache.maven.doxia</groupId>
          <artifactId>doxia-core</artifactId>
          <version>1.2</version>
+         <exclusions>
+            <exclusion>
+               <artifactId>xml-apis</artifactId>
+               <groupId>xml-apis</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>commons-logging</artifactId>
+               <groupId>commons-logging</groupId>
+            </exclusion>
+         </exclusions>
       </dependency>
       <dependency>
          <groupId>org.apache.maven.doxia</groupId>
@@ -127,11 +164,21 @@
          <groupId>org.apache.maven.reporting</groupId>
          <artifactId>maven-reporting-impl</artifactId>
          <version>2.2</version>
+         <exclusions>
+            <exclusion>
+               <artifactId>xml-apis</artifactId>
+               <groupId>xml-apis</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>commons-logging</artifactId>
+               <groupId>commons-logging</groupId>
+            </exclusion>
+         </exclusions>
       </dependency>
       <dependency>
          <groupId>org.codehaus.plexus</groupId>
          <artifactId>plexus-utils</artifactId>
-         <version>2.0.6</version>
+         <version>3.0.17</version>
       </dependency>
       <dependency>
          <groupId>org.jsoup</groupId>
@@ -199,15 +246,15 @@
          <scope>test</scope>
       </dependency>
       <dependency>
-         <groupId>commons-beanutils</groupId>
-         <artifactId>commons-beanutils</artifactId>
-         <version>1.9.0</version>
-      </dependency>
-      <dependency>
          <groupId>pl.pragmatists</groupId>
          <artifactId>JUnitParams</artifactId>
          <version>1.0.2</version>
          <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>1.7.5</version>
       </dependency>
    </dependencies>
 
@@ -297,6 +344,35 @@
                               <ignore></ignore>
                            </action>
                         </pluginExecution>
+                        <pluginExecution>
+                           <pluginExecutionFilter>
+                              <groupId>org.codehaus.mojo</groupId>
+                              <artifactId>build-helper-maven-plugin</artifactId>
+                              <versionRange>[1.8,)</versionRange>
+                              <goals>
+                                 <goal>add-source</goal>
+                              </goals>
+                           </pluginExecutionFilter>
+                           <action>
+                              <ignore></ignore>
+                           </action>
+                        </pluginExecution>
+                        <pluginExecution>
+                           <pluginExecutionFilter>
+                              <groupId>org.antlr</groupId>
+                              <artifactId>antlr4-maven-plugin</artifactId>
+                              <versionRange>[4.0,)</versionRange>
+                              <goals>
+                                 <goal>antlr4</goal>
+                              </goals>
+                           </pluginExecutionFilter>
+                           <action>
+                              <execute>
+                                 <runOnIncremental>false</runOnIncremental>
+                                 <runOnConfiguration>true</runOnConfiguration>
+                              </execute>
+                           </action>
+                        </pluginExecution>
                      </pluginExecutions>
                   </lifecycleMappingMetadata>
                </configuration>
@@ -304,6 +380,41 @@
          </plugins>
       </pluginManagement>
       <plugins>
+         <plugin>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-maven-plugin</artifactId>
+            <version>${antlr4-maven-plugin.version}</version>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>antlr4</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <indentSize>3</indentSize>
+               <outputDirectory>${basedir}/src/main/java/com/lonnyjacobson/webapp_minifier/antlr</outputDirectory>
+               <!-- <outputDirectory>${project.build.directory}/generated-sources/antlr4/com/lonnyjacobson/webapp_minifier/antlr</outputDirectory> -->
+            </configuration>
+         </plugin>
+         <!-- <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${build-helper-maven-plugin.version}</version>
+            <executions>
+               <execution>
+                  <phase>generate-sources</phase>
+                  <goals>
+                     <goal>add-source</goal>
+                  </goals>
+                  <configuration>
+                     <sources>
+                        <source>target/generated-sources/antlr4</source>
+                     </sources>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin> -->
          <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <executions>
