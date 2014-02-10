@@ -80,19 +80,24 @@ public class OptionsParserTest {
    public void testParse(final String text, final Object properties, final Object expecteds)
          throws Exception {
       if (properties == null) {
-         final OptionHandler handler = mock(OptionHandler.class);
-         this.parser.parse(text, handler);
+         final InlineConfigurationHandler inlineConfigHandler = mock(InlineConfigurationHandler.class);
+         final DirectiveHandler directiveHandler = mock(DirectiveHandler.class);
+         this.parser.parse(text, inlineConfigHandler, directiveHandler);
          if (text.contains("split-css")) {
-            verify(handler).splitCss();
+            verify(directiveHandler).splitCss();
          } else if (text.contains("split-javascript")) {
-            verify(handler).splitJavaScript();
+            verify(directiveHandler).splitJavaScript();
          } else {
-            verifyZeroInteractions(handler);
+            verifyZeroInteractions(inlineConfigHandler);
          }
       } else {
          final OverridablePluginOptions options = new DefaultOverridablePluginOptions();
-         final OptionHandler handler = new OptionHandler(options);
-         this.parser.parse(text, handler);
+         final DefaultInlineConfigurationHandler inlineConfigHandler = new DefaultInlineConfigurationHandler(
+               options);
+         final DirectiveHandler directiveHandler = mock(DirectiveHandler.class);
+         this.parser.parse(text, inlineConfigHandler, directiveHandler);
+         verify(directiveHandler, never()).splitCss();
+         verify(directiveHandler, never()).splitJavaScript();
          if (properties.getClass().isArray()) {
             final String[] keys = (String[]) properties;
             assertEquals(keys.length, ((Object[]) expecteds).length);
@@ -168,8 +173,11 @@ public class OptionsParserTest {
    @Parameters(method = "parseExceptionTestData")
    public void testParseException(final String text, final String property) throws Exception {
       final OverridablePluginOptions options = new DefaultOverridablePluginOptions();
-      final OptionHandler handler = new OptionHandler(options);
-      this.parser.parse(text, handler);
+      final DefaultInlineConfigurationHandler configHandler = new DefaultInlineConfigurationHandler(
+            options);
+      final DirectiveHandler directiveHandler = mock(DirectiveHandler.class);
+      verifyNoMoreInteractions(directiveHandler);
+      this.parser.parse(text, configHandler, directiveHandler);
       final Object actual = PropertyUtils.getProperty(options, property);
       fail("An exception should have been thrown.  The value of " + property + " was " + actual);
    }
@@ -181,7 +189,8 @@ public class OptionsParserTest {
     */
    public Object parseExceptionTestData() {
       return $(generateParseExceptionTestCase("closureCompilationLevel", "xSIMPLE_OPTIMIZATIONS"),
-            generateParseExceptionTestCase("jsCompressorEngine", "xCLOSURE"));
+            generateParseExceptionTestCase("jsCompressorEngine", "xCLOSURE"),
+            generateParseExceptionTestCase("jsCompressorEngine", "split-javascriptx"));
    }
 
    /**
