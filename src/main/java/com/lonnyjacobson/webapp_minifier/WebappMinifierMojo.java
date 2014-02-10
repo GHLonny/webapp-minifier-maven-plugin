@@ -55,9 +55,6 @@ import com.lonnyjacobson.webapp_minifier.utils.CommonUtils;
  */
 @Mojo(name = "minify-webapp", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
-   // @Execute(goal = "minify", lifecycle = "minify-cycle", phase =
-   // LifecyclePhase.PREPARE_PACKAGE)
-
    /**
     * The web application source directory.
     * 
@@ -67,12 +64,12 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    private File sourceDirectory;
 
    /**
-    * The web application target directory.
+    * The directory where the minified web application is built.
     * 
     * @since 1.0
     */
    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}-minified", required = true)
-   private File targetDirectory;
+   private File minifiedDirectory;
 
    /**
     * The HTML document parser. <br/>
@@ -84,8 +81,12 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * @since 1.0
     */
    @Parameter(defaultValue = "jsoup", required = true, readonly = true)
-   private String parser;
+   private final String parser = "jsoup";
 
+   /**
+    * TODO: Make the <code>TagReplacer</code> pluggable.
+    */
+   @SuppressWarnings("unused")
    @Requirement(hint = "jsoup")
    private TagReplacer tagReplacer;
 
@@ -204,10 +205,9 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    private String jsPrefix = "js";
 
    /**
-    * Defines other directories where CSS and JavaScript files may be found.
-    * This is useful when other projects contain common CSS and JavaScript. The
-    * name should be a location as defined in the HTML. The value would be the
-    * directory that corresponds to the location. <br/>
+    * Defines other directories where CSS and JavaScript files may be found. This is useful when
+    * other projects contain common CSS and JavaScript. The name should be a location as defined in
+    * the HTML. The value would be the directory that corresponds to the location. <br/>
     * <br/>
     * For example,
     * 
@@ -228,32 +228,42 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    /**
     * The JavaScript Compressor to use:
     * <ul>
-    * <li><b>CLOSURE</b> - The <a
-    * href="https://developers.google.com/closure/compiler/">Google Closure
-    * Compiler</a>.
-    * <li><b>YUI</b> - The <a href="http://yui.github.io/yuicompressor/">YUI
-    * Compressor</a>.
+    * <li><b>CLOSURE</b> - The <a href="https://developers.google.com/closure/compiler/">Google
+    * Closure Compiler</a>.
+    * <li><b>YUI</b> - The <a href="http://yui.github.io/yuicompressor/">YUI Compressor</a>.
     * </ul>
     * <b>NOTE:</b> This option can be overridden inline.
     * 
     * @since 1.0
     */
-   @Parameter(defaultValue = "YUI")
-   private JavaScriptCompressor jsCompressorEngine = JavaScriptCompressor.YUI;
+   @Parameter(defaultValue = "YUI", property = "jsCompressorEngine")
+   private String jsCompressorEngineString = JavaScriptCompressor.YUI.name();
 
    /**
-    * The Google Closure compiler level.<br/>
-    * <br/>
+    * The Google Closure <a
+    * href="https://developers.google.com/closure/compiler/docs/compilation_levels">compilation
+    * level</a>:
+    * <ul>
+    * <li><b>WHITESPACE_ONLY</b> - The <code>WHITESPACE_ONLY</code> compilation level removes
+    * comments from your code and also removes line breaks, unnecessary spaces, extraneous
+    * punctuation (such as parentheses and semicolons), and other whitespace.
+    * <li><b>SIMPLE_OPTIMIZATIONS</b> - The <code>SIMPLE_OPTIMIZATIONS</code> compilation level
+    * performs the same whitespace and comment removal as WHITESPACE_ONLY, but it also performs
+    * optimizations within expressions and functions, including renaming local variables and
+    * function parameters to shorter names.
+    * <li><b>ADVANCED_OPTIMIZATIONS</b> - The <code>ADVANCED_OPTIMIZATIONS</code> compilation level
+    * performs the same transformations as SIMPLE_OPTIMIZATIONS, but adds a variety of more
+    * aggressive global transformations to achieve the highest compression of all three levels.
+    * </ul>
     * <b>NOTE:</b> This option can be overridden inline.
     * 
     * @since 1.0
     */
-   @Parameter(defaultValue = "SIMPLE_OPTIMIZATIONS")
-   private CompilationLevel closureCompilationLevel = CompilationLevel.SIMPLE_OPTIMIZATIONS;
+   @Parameter(defaultValue = "SIMPLE_OPTIMIZATIONS", property = "closureCompilationLevel")
+   private String closureCompilationLevelString = CompilationLevel.SIMPLE_OPTIMIZATIONS.name();
 
    /**
-    * Instructs the YUI Compressor to break lines after the specified number of
-    * characters.
+    * Instructs the YUI Compressor to break lines after the specified number of characters.
     * <ul>
     * <li><b>-1</b> - Disables line breaking.
     * <li><b>0</b> - Causes a line break after each rule in CSS.
@@ -266,8 +276,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    private int yuiCssLineBreak = -1;
 
    /**
-    * Instructs the YUI Compressor to disable all JavaScript
-    * micro-optimizations.<br/>
+    * Instructs the YUI Compressor to disable all JavaScript micro-optimizations.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
     * 
@@ -277,8 +286,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    private boolean yuiJsDisableOptimizations;
 
    /**
-    * Instructs the YUI Compressor to break lines after the specified number of
-    * characters.
+    * Instructs the YUI Compressor to break lines after the specified number of characters.
     * <ul>
     * <li><b>-1</b> - Disables line breaking.
     * <li><b>0</b> - Causes a line break after each semi-colon in JavaScript.
@@ -291,8 +299,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    private int yuiJsLineBreak = -1;
 
    /**
-    * Instructs the YUI Compressor to only minify JavaScript without obfuscating
-    * local symbols.<br/>
+    * Instructs the YUI Compressor to only minify JavaScript without obfuscating local symbols.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
     * 
@@ -302,9 +309,8 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    private boolean yuiJsNoMunge;
 
    /**
-    * Instructs the YUI Compressor to preserve unnecessary semicolons in
-    * JavaScript. This option is useful when compressed code has to be run
-    * through JSLint.<br/>
+    * Instructs the YUI Compressor to preserve unnecessary semicolons in JavaScript. This option is
+    * useful when compressed code has to be run through JSLint.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
     * 
@@ -320,76 +326,61 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    public void execute() throws MojoExecutionException {
       // Copy the source directory to the target directory.
       try {
-         getLog().debug(
-               "Copying " + this.sourceDirectory + " to "
-                     + this.targetDirectory);
-         if (this.targetDirectory.exists()) {
-            FileUtils.deleteDirectory(this.targetDirectory);
+         getLog().debug("Copying " + this.sourceDirectory + " to " + this.minifiedDirectory);
+         if (this.minifiedDirectory.exists()) {
+            FileUtils.deleteDirectory(this.minifiedDirectory);
          }
-         FileUtils.copyDirectoryStructure(this.sourceDirectory,
-               this.targetDirectory);
+         FileUtils.copyDirectoryStructure(this.sourceDirectory, this.minifiedDirectory);
       } catch (final IOException e) {
-         throw new MojoExecutionException(
-               "Failed to copy the source directory", e);
+         throw new MojoExecutionException("Failed to copy the source directory", e);
       }
 
       if (!this.skipMinify) {
          // Process each of the requested files.
-         final DefaultTagHandler tagHandler = new DefaultTagHandler(getLog(),
-               this);
-         final TagReplacer tagReplacer = TagReplacerFactory.getReplacer(
-               this.parser, getLog(), this.encoding);
+         final DefaultTagHandler tagHandler = new DefaultTagHandler(getLog(), this);
+         final TagReplacer tagReplacer = TagReplacerFactory.getReplacer(this.parser, getLog(),
+               this.encoding);
          for (final String fileName : getFilesToProcess()) {
-            final File htmlFile = new File(this.targetDirectory, fileName);
-            final File minifiedHtmlFile = new File(this.targetDirectory,
-                  fileName + ".min");
-            final File htmlFileBackup = new File(this.targetDirectory, fileName
-                  + ".bak");
+            final File htmlFile = new File(this.minifiedDirectory, fileName);
+            final File minifiedHtmlFile = new File(this.minifiedDirectory, fileName + ".min");
+            final File htmlFileBackup = new File(this.minifiedDirectory, fileName + ".bak");
 
             InputStream inputStream = null;
             OutputStream outputStream = null;
             try {
                getLog().info("Processing " + htmlFile.getCanonicalFile());
-               final String baseUri = CommonUtils.getBaseUri(htmlFile,
-                     this.targetDirectory);
-               inputStream = new BufferedInputStream(new FileInputStream(
-                     htmlFile));
-               outputStream = new BufferedOutputStream(new FileOutputStream(
-                     minifiedHtmlFile));
+               final String baseUri = CommonUtils.getBaseUri(htmlFile, this.minifiedDirectory);
+               inputStream = new BufferedInputStream(new FileInputStream(htmlFile));
+               outputStream = new BufferedOutputStream(new FileOutputStream(minifiedHtmlFile));
                tagHandler.start(htmlFile);
-               tagReplacer.process(inputStream, tagHandler, baseUri,
-                     outputStream);
+               tagReplacer.process(inputStream, tagHandler, baseUri, outputStream);
             } catch (final IOException e) {
-               throw new MojoExecutionException(
-                     "Failed to process " + htmlFile, e);
+               throw new MojoExecutionException("Failed to process " + htmlFile, e);
             } finally {
                IOUtil.close(inputStream);
                IOUtil.close(outputStream);
             }
             if (!htmlFile.renameTo(htmlFileBackup)) {
-               throw new MojoExecutionException("Failed to rename "
-                     + htmlFile.getName() + " to " + htmlFileBackup.getName());
+               throw new MojoExecutionException("Failed to rename " + htmlFile.getName() + " to "
+                     + htmlFileBackup.getName());
             }
             if (!minifiedHtmlFile.renameTo(htmlFile)) {
-               throw new MojoExecutionException("Failed to rename "
-                     + minifiedHtmlFile.getName() + " to " + htmlFile.getName());
+               throw new MojoExecutionException("Failed to rename " + minifiedHtmlFile.getName()
+                     + " to " + htmlFile.getName());
             }
          }
 
          // Write out the summary file.
-         final File summaryFile = new File(this.targetDirectory,
-               "webapp-minifier-summary.xml");
+         final File summaryFile = new File(this.minifiedDirectory, "webapp-minifier-summary.xml");
          try {
-            final JAXBContext context = JAXBContext
-                  .newInstance(MinificationSummary.class);
+            final JAXBContext context = JAXBContext.newInstance(MinificationSummary.class);
             final Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_ENCODING, getEncoding());
             marshaller.marshal(tagHandler.getReport(), summaryFile);
             tagHandler.getReport();
          } catch (final JAXBException e) {
-            throw new MojoExecutionException(
-                  "Failed to marshal the plugin's summary to XML", e);
+            throw new MojoExecutionException("Failed to marshal the plugin's summary to XML", e);
          }
       }
    }
@@ -401,7 +392,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     */
    protected String[] getFilesToProcess() {
       final DirectoryScanner directoryScanner = new DirectoryScanner();
-      directoryScanner.setBasedir(this.targetDirectory);
+      directoryScanner.setBasedir(this.minifiedDirectory);
 
       final String[] includes = CommonUtils.isEmpty(this.htmlIncludes) ? getDefaultIncludes()
             : this.htmlIncludes;
@@ -443,12 +434,12 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    @Override
    public File getTargetDirectory() {
-      return this.targetDirectory;
+      return this.minifiedDirectory;
    }
 
    @Override
    public void setTargetDirectory(final File targetDirectory) {
-      this.targetDirectory = targetDirectory;
+      this.minifiedDirectory = targetDirectory;
    }
 
    @Override
@@ -503,51 +494,46 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    @Override
    public JavaScriptCompressor getJsCompressorEngine() {
-      return this.jsCompressorEngine;
+      return JavaScriptCompressor.valueOf(this.jsCompressorEngineString);
    }
 
    @Override
-   public void setJsCompressorEngine(
-         final JavaScriptCompressor jsCompressorEngine) {
-      this.jsCompressorEngine = jsCompressorEngine;
+   public void setJsCompressorEngine(final JavaScriptCompressor jsCompressorEngine) {
+      this.jsCompressorEngineString = jsCompressorEngine.name();
 
    }
 
    /**
-    * Sets the JavaScript compressor engine. This method was added for Maven 2
-    * compatibility.
+    * Sets the JavaScript compressor engine. This method was added for Maven 2 compatibility.
     * 
     * @param jsCompressorEngine
     *           the JavaScript compressor engine.
     * @see #setJsCompressorEngine(JavaScriptCompressor)
     */
    public void setJsCompressorEngine(final String jsCompressorEngine) {
-      this.jsCompressorEngine = JavaScriptCompressor
-            .valueOf(jsCompressorEngine);
+      setJsCompressorEngine(JavaScriptCompressor.valueOf(jsCompressorEngine));
 
    }
 
    @Override
    public CompilationLevel getClosureCompilationLevel() {
-      return this.closureCompilationLevel;
+      return CompilationLevel.valueOf(this.closureCompilationLevelString);
    }
 
    @Override
-   public void setClosureCompilationLevel(
-         final CompilationLevel compilationLevel) {
-      this.closureCompilationLevel = compilationLevel;
+   public void setClosureCompilationLevel(final CompilationLevel compilationLevel) {
+      this.closureCompilationLevelString = compilationLevel.name();
    }
 
    /**
-    * Sets the Google Closure compilation level. This method was added for Maven
-    * 2 compatibility.
+    * Sets the Google Closure compilation level. This method was added for Maven 2 compatibility.
     * 
     * @param compilationLevel
     *           the compilation level.
     * @see #setClosureCompilationLevel(CompilationLevel)
     */
    public void setClosureCompilationLevel(final String compilationLevel) {
-      this.closureCompilationLevel = CompilationLevel.valueOf(compilationLevel);
+      setClosureCompilationLevel(CompilationLevel.valueOf(compilationLevel));
    }
 
    @Override

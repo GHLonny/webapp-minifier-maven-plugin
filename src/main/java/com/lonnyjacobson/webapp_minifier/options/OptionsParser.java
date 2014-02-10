@@ -55,15 +55,20 @@ public class OptionsParser {
     * 
     * @param text
     *           the text to parse.
-    * @param optionHandler
+    * @param inlineConfigurationHandler
     *           the handler for parsed options.
+    * @param directiveHandler
+    *           the handler for parsed directives.
     * @throws ParseOptionException
     *            if unable to parse the options or if an unsupported option is received.
     */
-   public void parse(final String text, final OptionHandler optionHandler)
-         throws ParseOptionException {
+   public void parse(final String text,
+         final InlineConfigurationHandler inlineConfigurationHandler,
+         final DirectiveHandler directiveHandler) throws ParseOptionException {
       Preconditions.checkNotNull(text, "The text cannot be null");
-      Preconditions.checkNotNull(optionHandler, "The option handler cannot be null");
+      Preconditions.checkNotNull(inlineConfigurationHandler,
+            "The inline configuration handler cannot be null");
+      Preconditions.checkNotNull(directiveHandler, "The directive handler cannot be null");
 
       int index = text.indexOf(OPTION_HEADER);
       if (index >= 0) {
@@ -82,10 +87,10 @@ public class OptionsParser {
                   OptionsParser.this.log.debug("Handling " + directive);
                   switch (child.getSymbol().getType()) {
                   case PluginInlineConfigurationLexer.SPLITCSS:
-                     optionHandler.splitCss();
+                     directiveHandler.splitCss();
                      break;
                   case PluginInlineConfigurationLexer.SPLITJS:
-                     optionHandler.splitJavaScript();
+                     directiveHandler.splitJavaScript();
                      break;
                   default:
                      throw new IllegalStateException("Unrecognized directive: " + directive);
@@ -100,7 +105,7 @@ public class OptionsParser {
                   final String value = separatorAndValueContext.getChild(1).getText();
                   OptionsParser.this.log.debug("Handling " + key + '=' + value);
                   try {
-                     optionHandler.handleOption(key, value);
+                     inlineConfigurationHandler.handleOption(key, value);
                   } catch (final ParseOptionException e) {
                      throw new RuntimeException(e);
                   }

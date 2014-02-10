@@ -32,19 +32,24 @@ import com.lonnyjacobson.webapp_minifier.summary.MinificationSummary;
 import com.lonnyjacobson.webapp_minifier.summary.MinifiedFileMetrics;
 
 /**
- * Generates a report summarizing the minification performed on the web
- * application.
+ * Generates a report summarizing the minification performed on the web application. <br/>
+ * <b>NOTE:</b> Requires Maven 3.
  * 
  * @author Lonny
  */
 @Mojo(name = "webapp-minifier-report", threadSafe = true, defaultPhase = LifecyclePhase.SITE)
 public class WebappMinifierReportMojo extends AbstractMavenReport {
+   /**
+    * The web application target directory.
+    */
+   @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}-minified", required = true)
+   private File minifiedDirectory;
 
    /**
-    * The report output directory. Note that this parameter is only evaluated if
-    * the goal is run directly from the command line or during the default
-    * lifecycle. If the goal is run indirectly as part of a site generation, the
-    * output directory configured in the Maven Site Plugin is used instead.
+    * The report output directory. Note that this parameter is only evaluated if the goal is run
+    * directly from the command line or during the default lifecycle. If the goal is run indirectly
+    * as part of a site generation, the output directory configured in the Maven Site Plugin is used
+    * instead.
     */
    @Parameter(defaultValue = "${project.reporting.outputDirectory", required = true)
    private File outputDirectory;
@@ -101,8 +106,7 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
    }
 
    @Override
-   protected void executeReport(final Locale locale)
-         throws MavenReportException {
+   protected void executeReport(final Locale locale) throws MavenReportException {
       getLog().info("executeReport(" + locale + ")");
       initializeFormatters(locale);
 
@@ -184,9 +188,8 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
 
                if (!destination.equals(MinifiedFileMetrics.EMBEDDED_CSS)
                      && !destination.equals(MinifiedFileMetrics.EMBEDDED_JS)) {
-                  destinationAttributes.addAttribute(
-                        SinkEventAttributes.ROWSPAN, destCounts
-                              .get(destination).intValue());
+                  destinationAttributes.addAttribute(SinkEventAttributes.ROWSPAN,
+                        destCounts.get(destination).intValue());
                   destCounts.remove(destination);
                }
                sink.tableCell(destinationAttributes);
@@ -212,9 +215,8 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
             sink.tableCell_();
 
             sink.tableCell(rightAttributes);
-            sink.text(this.percentFormatter
-                  .format((originalLength - minifiedLength)
-                        / (float) originalLength));
+            sink.text(this.percentFormatter.format((originalLength - minifiedLength)
+                  / (float) originalLength));
             sink.tableCell_();
 
             final double time = metrics.getTime() / 1000000.0;
@@ -238,8 +240,7 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
             sink.tableHeaderCell_();
 
             sink.tableCell(centeredAttributes);
-            sink.text(minifiers.size() > 1 ? "Multiple" : minifiers.iterator()
-                  .next());
+            sink.text(minifiers.size() > 1 ? "Multiple" : minifiers.iterator().next());
             sink.tableCell_();
 
             sink.tableCell(rightAttributes);
@@ -251,9 +252,8 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
             sink.tableCell_();
 
             sink.tableCell(rightAttributes);
-            sink.text(this.percentFormatter
-                  .format((totalOriginalLength - totalMinifiedLength)
-                        / (float) totalOriginalLength));
+            sink.text(this.percentFormatter.format((totalOriginalLength - totalMinifiedLength)
+                  / (float) totalOriginalLength));
             sink.tableCell_();
 
             sink.tableCell(rightAttributes);
@@ -274,22 +274,20 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
    }
 
    protected void initializeFormatters(final Locale locale) {
-      this.lengthFormatter = (DecimalFormat) NumberFormat
-            .getIntegerInstance(locale);
+      this.lengthFormatter = (DecimalFormat) NumberFormat.getIntegerInstance(locale);
       this.lengthFormatter.setPositiveSuffix(" B");
       this.percentFormatter = NumberFormat.getPercentInstance(locale);
       this.percentFormatter.setMinimumFractionDigits(1);
       this.percentFormatter.setMaximumFractionDigits(1);
-      this.timeFormatter = (DecimalFormat) NumberFormat
-            .getNumberInstance(locale);
+      this.timeFormatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
       this.timeFormatter.setPositiveSuffix(" msec");
       this.timeFormatter.setMinimumFractionDigits(1);
       this.timeFormatter.setMaximumFractionDigits(1);
    }
 
    /**
-    * Constructs a mapping of destination file to its reference count. This will
-    * be used to determine the row span in the final table.
+    * Constructs a mapping of destination file to its reference count. This will be used to
+    * determine the row span in the final table.
     * 
     * @param minifiedFiles
     *           the metrics.
@@ -310,8 +308,8 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
    }
 
    /**
-    * Loads the minification summary. If a summary file cannot be found, a
-    * default summary is created.
+    * Loads the minification summary. If a summary file cannot be found, a default summary is
+    * created.
     * 
     * @return the minification summary.
     * @throws MavenReportException
@@ -320,22 +318,17 @@ public class WebappMinifierReportMojo extends AbstractMavenReport {
    protected MinificationSummary loadSummary() throws MavenReportException {
       final MinificationSummary summary;
       try {
-         final JAXBContext context = JAXBContext
-               .newInstance(MinificationSummary.class);
+         final JAXBContext context = JAXBContext.newInstance(MinificationSummary.class);
          final Unmarshaller unmarshaller = context.createUnmarshaller();
-         final File summaryFile = new File(this.outputDirectory,
-               "webapp-minifier-summary.xml");
+         final File summaryFile = new File(this.minifiedDirectory, "webapp-minifier-summary.xml");
          if (summaryFile.exists()) {
             summary = (MinificationSummary) unmarshaller.unmarshal(summaryFile);
          } else {
-            getLog().warn(
-                  "The summary file '" + summaryFile.getName()
-                        + "' does not exist.");
+            getLog().warn("The summary file '" + summaryFile.getName() + "' does not exist.");
             summary = new MinificationSummary();
          }
       } catch (final JAXBException e) {
-         throw new MavenReportException(
-               "Failed to read the minification summary", e);
+         throw new MavenReportException("Failed to read the minification summary", e);
       }
       return summary;
    }
