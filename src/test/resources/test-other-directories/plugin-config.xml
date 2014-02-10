@@ -6,9 +6,8 @@
             <configuration>
                <sourceDirectory>${basedir}/target/test-classes/test-other-directories/src/main/webapp
                </sourceDirectory>
-               <targetDirectory>${basedir}/target/test-other-directories-min
-               </targetDirectory>
-               <parser>jsoup</parser>
+               <minifiedDirectory>${basedir}/target/test-other-directories-min
+               </minifiedDirectory>
                <skipMinify>false</skipMinify>
                <skipCssMinify>false</skipCssMinify>
                <skipEmbeddedCssMinify>false</skipEmbeddedCssMinify>

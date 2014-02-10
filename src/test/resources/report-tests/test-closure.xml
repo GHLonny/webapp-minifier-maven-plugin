@@ -4,7 +4,8 @@
          <plugin>
             <artifactId>webapp-minifier-maven-plugin</artifactId>
             <configuration>
-               <outputDirectory>${basedir}/target/test-closure-min</outputDirectory>
+               <minifiedDirectory>${basedir}/target/test-closure-min</minifiedDirectory>
+               <outputDirectory>${basedir}/target/site</outputDirectory>
             </configuration>
          </plugin>
       </plugins>
