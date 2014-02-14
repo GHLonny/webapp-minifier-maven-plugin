@@ -52,7 +52,7 @@
                   <id>Minify the web application</id>
                   <configuration>
                      <sourceDirectory>${basedir}/src/main/webapp</sourceDirectory>
-                     <targetDirectory>${project.build.directory}/${project.build.finalName}-minified</targetDirectory>
+                     <minifiedDirectory>${project.build.directory}/${project.build.finalName}-minified</minifiedDirectory>
                   </configuration>
                   <goals>
                      <goal>minify-webapp</goal>

@@ -1,6 +1,9 @@
 package com.lonnyjacobson.webapp_minifier.options;
 
 /**
+ * Implementations of the <code>DirectiveHandler</code> receive notification of a directive in
+ * configuration and react to it.
+ * 
  * @author Lonny
  */
 public interface DirectiveHandler {

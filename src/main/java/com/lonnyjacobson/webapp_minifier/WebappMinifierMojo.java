@@ -31,16 +31,20 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import com.google.javascript.jscomp.CompilationLevel;
 import com.lonnyjacobson.webapp_minifier.options.JavaScriptCompressor;
@@ -55,6 +59,12 @@ import com.lonnyjacobson.webapp_minifier.utils.CommonUtils;
  */
 @Mojo(name = "minify-webapp", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
+   /**
+    * Get the Maven project.
+    */
+   @Parameter(defaultValue = "${project}", required = true, readonly = true)
+   private MavenProject project;
+
    /**
     * The web application source directory.
     * 
@@ -381,6 +391,30 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
             tagHandler.getReport();
          } catch (final JAXBException e) {
             throw new MojoExecutionException("Failed to marshal the plugin's summary to XML", e);
+         }
+
+         // Attempt to configure the maven-war-plugin.
+         if (this.project != null) {
+            this.project.getProperties().setProperty("war.warName", "my-name.war");
+            for (final Object object : this.project.getBuildPlugins()) {
+               final Plugin plugin = (Plugin) object;
+               if (StringUtils.equals("org.apache.maven.plugins", plugin.getGroupId())
+                     && StringUtils.equals("maven-war-plugin", plugin.getArtifactId())) {
+                  getLog().info("Examining plugin " + plugin.getArtifactId());
+                  final Object configuration = plugin.getConfiguration();
+                  getLog().info(
+                        "Fetched configuration " + configuration.getClass() + ": " + configuration);
+                  final Xpp3Dom document = (Xpp3Dom) configuration;
+                  final Xpp3Dom[] children = document.getChildren("warSourceDirectory");
+                  getLog().info("Fetched children " + children.length);
+                  for (final Xpp3Dom child : children) {
+                     getLog().info("Child: " + child);
+                     getLog().info("Child Value: " + child.getValue());
+                     child.setValue(child.getValue() + "_oops");
+                     getLog().info("Child Value: " + child.getValue());
+                  }
+               }
+            }
          }
       }
    }
