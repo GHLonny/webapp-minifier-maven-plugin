@@ -1,7 +1,7 @@
 grammar PluginInlineConfiguration;
 
 @header {
-package com.lonnyjacobson.webapp_minifier.antlr;
+package com.github.webapp_minifier.antlr;
 }
 
 import Directives, JavaProperties, Primitives;
