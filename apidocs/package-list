@@ -1,6 +1,6 @@
-com.lonnyjacobson.webapp_minifier
-com.lonnyjacobson.webapp_minifier.directives
-com.lonnyjacobson.webapp_minifier.options
-com.lonnyjacobson.webapp_minifier.replacer
-com.lonnyjacobson.webapp_minifier.summary
-com.lonnyjacobson.webapp_minifier.utils
+com.github.webapp_minifier
+com.github.webapp_minifier.antlr
+com.github.webapp_minifier.options
+com.github.webapp_minifier.replacer
+com.github.webapp_minifier.summary
+com.github.webapp_minifier.utils
