@@ -6,10 +6,10 @@
     <link>http://lonnyj.github.com/webapp-minifier-maven-plugin</link>
     <description>Webapp Minifier Maven Plugin - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2013 - 2014</copyright>
+    <copyright>&#169;2013 - 2015</copyright>
     <item>
-      <title>File: 33,
-             Errors: 2458,
+      <title>File: 35,
+             Errors: 2597,
              Warnings: 0,
              Infos: 0
       </title>
@@ -38,7 +38,7 @@
                   0
                 </td>
                 <td>
-                  87
+                  77
                 </td>
               </tr>
                           <tr>
@@ -71,7 +71,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://lonnyj.github.com/webapp-minifier-maven-plugin/checkstyle.html#com.github.webapp_minifier.package-info.java">com/github/webapp_minifier/package-info.java</a>
+                  <a href="http://lonnyj.github.com/webapp-minifier-maven-plugin/checkstyle.html#com.github.webapp_minifier.replacer.TagReplacer.java">com/github/webapp_minifier/replacer/TagReplacer.java</a>
                 </td>
                 <td>
                   0
@@ -85,7 +85,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://lonnyj.github.com/webapp-minifier-maven-plugin/checkstyle.html#com.github.webapp_minifier.replacer.TagReplacer.java">com/github/webapp_minifier/replacer/TagReplacer.java</a>
+                  <a href="http://lonnyj.github.com/webapp-minifier-maven-plugin/checkstyle.html#com.github.webapp_minifier.package-info.java">com/github/webapp_minifier/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -122,7 +122,7 @@
                   0
                 </td>
                 <td>
-                  177
+                  214
                 </td>
               </tr>
                           <tr>
@@ -178,7 +178,7 @@
                   0
                 </td>
                 <td>
-                  136
+                  128
                 </td>
               </tr>
                           <tr>
@@ -192,7 +192,7 @@
                   0
                 </td>
                 <td>
-                  20
+                  17
                 </td>
               </tr>
                           <tr>
@@ -220,7 +220,7 @@
                   0
                 </td>
                 <td>
-                  193
+                  194
                 </td>
               </tr>
                           <tr>
@@ -365,6 +365,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="http://lonnyj.github.com/webapp-minifier-maven-plugin/checkstyle.html#com.github.webapp_minifier.compressor.package-info.java">com/github/webapp_minifier/compressor/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://lonnyj.github.com/webapp-minifier-maven-plugin/checkstyle.html#com.github.webapp_minifier.WebappMinifierReportMojo.java">com/github/webapp_minifier/WebappMinifierReportMojo.java</a>
                 </td>
                 <td>
@@ -403,6 +417,20 @@
                 </td>
                 <td>
                   20
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://lonnyj.github.com/webapp-minifier-maven-plugin/checkstyle.html#com.github.webapp_minifier.compressor.ClosureJavaScriptCompressor.java">com/github/webapp_minifier/compressor/ClosureJavaScriptCompressor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  70
                 </td>
               </tr>
                           <tr>
@@ -472,7 +500,7 @@
                   0
                 </td>
                 <td>
-                  1410
+                  1461
                 </td>
               </tr>
                           <tr>

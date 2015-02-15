@@ -1,5 +1,6 @@
 com.github.webapp_minifier
 com.github.webapp_minifier.antlr
+com.github.webapp_minifier.compressor
 com.github.webapp_minifier.options
 com.github.webapp_minifier.replacer
 com.github.webapp_minifier.summary
