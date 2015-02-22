@@ -23,7 +23,7 @@ import com.github.webapp_minifier.options.ParseOptionException;
 /**
  * This class is a {@link TagReplacer} implementation that uses the <a
  * href="http://jsoup.org/">jsoup</a> library.
- * 
+ *
  * @author Lonny
  */
 @Component(role = TagReplacer.class, hint = "jsoup")
@@ -56,9 +56,8 @@ public class JsoupTagReplacer implements TagReplacer {
       @Override
       public void head(final Node node, final int depth) {
          if (this.currentNode == null) {
-            if ((node instanceof Comment) || (isExternalCss(node))
-                  || (isEmbeddedCss(node)) || (isExternalJs(node))
-                  || (isEmbeddedJs(node))) {
+            if ((node instanceof Comment) || (isExternalCss(node)) || (isEmbeddedCss(node))
+                  || (isExternalJs(node)) || (isEmbeddedJs(node))) {
                this.currentNode = node;
             } else if (node instanceof TextNode) {
                this.handler.handleText(((TextNode) node).text());
@@ -94,14 +93,13 @@ public class JsoupTagReplacer implements TagReplacer {
 
       /**
        * Handles a comment node.
-       * 
+       *
        * @param node
        *           the node to handle.
        * @throws ParseOptionException
        *            if an error occurs while parsing options from the comment.
        */
-      private void handleComment(final Comment node)
-            throws ParseOptionException {
+      private void handleComment(final Comment node) throws ParseOptionException {
          final boolean delete = this.handler.handleComment((node).getData());
          if (delete) {
             this.toBeDeleted.add(node);
@@ -110,15 +108,14 @@ public class JsoupTagReplacer implements TagReplacer {
 
       /**
        * Handles an external CSS node.
-       * 
+       *
        * @param node
        *           the node to handle.
        * @throws IOException
        *            if an unexpected I/O error occurs.
        */
       private void handleExternalCss(final Node node) throws IOException {
-         final String replacementHref = this.handler.handleExternalCss(node
-               .attr("href"));
+         final String replacementHref = this.handler.handleExternalCss(node.attr("href"));
          if (replacementHref == null) {
             this.toBeDeleted.add(node);
          } else {
@@ -128,7 +125,7 @@ public class JsoupTagReplacer implements TagReplacer {
 
       /**
        * Handles an embedded CSS node.
-       * 
+       *
        * @param node
        *           the node to handle.
        * @throws IOException
@@ -141,12 +138,11 @@ public class JsoupTagReplacer implements TagReplacer {
             if (childNode instanceof DataNode) {
                final DataNode dataNode = (DataNode) childNode;
                final String data = dataNode.getWholeData();
-               final String replacementCss = this.handler.handleEmbeddedCss(
-                     data, scoped);
+               final String replacementCss = this.handler.handleEmbeddedCss(data, scoped);
                if (scoped && (replacementCss == null)) {
                   JsoupTagReplacer.this.log
-                        .warn("Scoped style cannot be removed.  Preserving the embedded CSS:\n"
-                              + data);
+                  .warn("Scoped style cannot be removed.  Preserving the embedded CSS:\n"
+                        + data);
                } else if (replacementCss == null) {
                   this.toBeDeleted.add(childNode);
                   removed++;
@@ -165,15 +161,14 @@ public class JsoupTagReplacer implements TagReplacer {
 
       /**
        * Handles an external JavaScript node.
-       * 
+       *
        * @param node
        *           the node to handle.
        * @throws IOException
        *            if an unexpected I/O error occurs.
        */
       private void handleExternalJs(final Node node) throws IOException {
-         final String replacementSrc = this.handler.handleExternalJs(node
-               .attr("src"));
+         final String replacementSrc = this.handler.handleExternalJs(node.attr("src"));
          if (replacementSrc == null) {
             this.toBeDeleted.add(node);
          } else {
@@ -183,7 +178,7 @@ public class JsoupTagReplacer implements TagReplacer {
 
       /**
        * Handles an embedded JavaScript node.
-       * 
+       *
        * @param node
        *           the node to handle.
        * @throws IOException
@@ -194,8 +189,7 @@ public class JsoupTagReplacer implements TagReplacer {
          for (final Node childNode : node.childNodes()) {
             if (childNode instanceof DataNode) {
                final DataNode dataNode = (DataNode) childNode;
-               final String replacementJs = this.handler
-                     .handleEmbeddedJs(dataNode.getWholeData());
+               final String replacementJs = this.handler.handleEmbeddedJs(dataNode.getWholeData());
                if (replacementJs == null) {
                   this.toBeDeleted.add(childNode);
                   removed++;
@@ -214,7 +208,7 @@ public class JsoupTagReplacer implements TagReplacer {
 
       /**
        * Determines if the given node is an external CSS tag.
-       * 
+       *
        * @param node
        *           the node to test.
        * @return <code>true</code> if the node is an external CSS tag.
@@ -222,13 +216,12 @@ public class JsoupTagReplacer implements TagReplacer {
       private boolean isExternalCss(final Node node) {
          return "link".equalsIgnoreCase(node.nodeName())
                && "stylesheet".equalsIgnoreCase(node.attr("rel"))
-               && TEXT_CSS.equalsIgnoreCase(node.attr("type"))
-               && node.hasAttr("href");
+               && TEXT_CSS.equalsIgnoreCase(node.attr("type")) && node.hasAttr("href");
       }
 
       /**
        * Determines if the given node is an embedded CSS tag.
-       * 
+       *
        * @param node
        *           the node to test.
        * @return <code>true</code> if the node is an embedded CSS tag.
@@ -240,7 +233,7 @@ public class JsoupTagReplacer implements TagReplacer {
 
       /**
        * Determines if the given node is an external JavaScript tag.
-       * 
+       *
        * @param node
        *           the node to test.
        * @return <code>true</code> if the node is an external JavaScript tag.
@@ -251,7 +244,7 @@ public class JsoupTagReplacer implements TagReplacer {
 
       /**
        * Determines if the given node is an embedded JavaScript tag.
-       * 
+       *
        * @param node
        *           the node to test.
        * @return <code>true</code> if the node is an embedded JavaScript tag.
@@ -261,22 +254,24 @@ public class JsoupTagReplacer implements TagReplacer {
       }
 
       /**
+       * Determines if the given node is a JavaScript tag.
+       *
        * @param node
-       * @return
+       *           the node to test.
+       * @return <code>true</code> if the node contains or references JavaScript.
        */
       private boolean isJsScript(final Node node) {
          final boolean isJsScript = "script".equalsIgnoreCase(node.nodeName())
-               && (!node.hasAttr("type")
-                     || TEXT_JS.equalsIgnoreCase(node.attr("type")) || APPLICATION_JS
-                        .equalsIgnoreCase(node.attr("type")));
+               && (!node.hasAttr("type") || TEXT_JS.equalsIgnoreCase(node.attr("type")) || APPLICATION_JS
+                     .equalsIgnoreCase(node.attr("type")));
          return isJsScript;
       }
 
       /**
-       * Determines if the given node is "scoped". In HTML 5,
-       * <code>&lt;style></code> tags can be scoped which means that they only
-       * apply to the element in which they exist and that element's children.
-       * 
+       * Determines if the given node is "scoped". In HTML 5, <code>&lt;style></code> tags can be
+       * scoped which means that they only apply to the element in which they exist and that
+       * element's children.
+       *
        * @param node
        *           the node to test.
        * @return <code>true</code> if the node is "scoped".
@@ -299,16 +294,9 @@ public class JsoupTagReplacer implements TagReplacer {
       this.charsetName = charsetName;
    }
 
-   /**
-    * @throws IOException
-    * @see com.github.jacobsonl.webapp_minifier.replacer.TagReplacer#process(InputStream,
-    *      com.github.jacobsonl.webapp_minifier.replacer.NodeHandler, String,
-    *      OutputStream)
-    */
    @Override
-   public void process(final InputStream inputStream,
-         final NodeHandler handler, final String baseUri,
-         final OutputStream outputStream) throws IOException {
+   public void process(final InputStream inputStream, final NodeHandler handler,
+         final String baseUri, final OutputStream outputStream) throws IOException {
       if (inputStream == null) {
          throw new IllegalArgumentException("The inputStream cannot be null");
       }
@@ -321,8 +309,7 @@ public class JsoupTagReplacer implements TagReplacer {
 
       final Visitor visitor = new Visitor(handler);
       final NodeTraversor traversor = new NodeTraversor(visitor);
-      final Document document = Jsoup.parse(inputStream, this.charsetName,
-            baseUri);
+      final Document document = Jsoup.parse(inputStream, this.charsetName, baseUri);
 
       traversor.traverse(document);
       visitor.cleanUp();

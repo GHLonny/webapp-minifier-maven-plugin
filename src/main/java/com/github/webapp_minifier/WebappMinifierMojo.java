@@ -67,7 +67,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * The web application source directory.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "${basedir}/src/main/webapp", required = true)
@@ -75,7 +75,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * The directory where the minified web application is built.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}-minified", required = true)
@@ -87,7 +87,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * <ul>
     * <li>jsoup
     * </ul>
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "jsoup", required = true, readonly = true)
@@ -108,7 +108,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * <li>**&#47;*.htm
     * <li>**&#47;*.jsp
     * </ul>
-    * 
+    *
     * @since 1.0
     */
    @Parameter
@@ -116,7 +116,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * The HTML files to exclude from processing.
-    * 
+    *
     * @since 1.0
     */
    @Parameter
@@ -124,7 +124,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * Skips any minification processing.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -134,7 +134,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * Skips CSS minification.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -144,7 +144,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * Skips Embedded CSS minification.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -154,7 +154,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * Skips JavaScript minification.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -164,7 +164,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * Skips Embedded JavaScript minification.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -174,7 +174,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * Merges embedded CSS with externally minified CSS. <br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -184,7 +184,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * Merges embedded JavaScript with externally minified JavaScript. <br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -192,7 +192,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * The character encoding used for HTML, JavScript and CSS files.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
@@ -200,7 +200,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * The prefix for minified CSS files.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "css")
@@ -208,7 +208,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * The prefix for minified JavaScript files.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "js")
@@ -220,7 +220,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * the HTML. The value would be the directory that corresponds to the location. <br/>
     * <br/>
     * For example,
-    * 
+    *
     * <pre>
     * &lt;otherDirectories>
     *   &lt;property>
@@ -229,7 +229,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     *   &lt;/property>
     * &lt;/otherDirectories>
     * </pre>
-    * 
+    *
     * @since 1.0
     */
    @Parameter
@@ -243,7 +243,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * <li><b>YUI</b> - The <a href="http://yui.github.io/yuicompressor/">YUI Compressor</a>.
     * </ul>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "YUI", property = "jsCompressorEngine")
@@ -266,7 +266,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * aggressive global transformations to achieve the highest compression of all three levels.
     * </ul>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "SIMPLE_OPTIMIZATIONS", property = "closureCompilationLevel")
@@ -279,7 +279,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * <li><b>0</b> - Causes a line break after each rule in CSS.
     * </ul>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "-1")
@@ -289,7 +289,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * Instructs the YUI Compressor to disable all JavaScript micro-optimizations.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -302,7 +302,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * <li><b>0</b> - Causes a line break after each semi-colon in JavaScript.
     * </ul>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "-1")
@@ -312,7 +312,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * Instructs the YUI Compressor to only minify JavaScript without obfuscating local symbols.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -323,7 +323,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
     * useful when compressed code has to be run through JSLint.<br/>
     * <br/>
     * <b>NOTE:</b> This option can be overridden inline.
-    * 
+    *
     * @since 1.0
     */
    @Parameter(defaultValue = "false")
@@ -421,7 +421,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * Returns the array of files to process.
-    * 
+    *
     * @return the array of files to process.
     */
    protected String[] getFilesToProcess() {
@@ -443,14 +443,18 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    }
 
    /**
-    * @return
+    * Returns the default includes.
+    *
+    * @return the default includes.
     */
    protected String[] getDefaultIncludes() {
       return new String[] { "**/*.html", "**/*.htm", "**/*.jsp" };
    }
 
    /**
-    * @return
+    * Returns the default excludes.
+    *
+    * @return the default excludes.
     */
    protected String[] getDefaultExcludes() {
       return new String[0];
@@ -539,7 +543,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * Sets the JavaScript compressor engine. This method was added for Maven 2 compatibility.
-    * 
+    *
     * @param jsCompressorEngine
     *           the JavaScript compressor engine.
     * @see #setJsCompressorEngine(JavaScriptCompressor)
@@ -561,7 +565,7 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
 
    /**
     * Sets the Google Closure compilation level. This method was added for Maven 2 compatibility.
-    * 
+    *
     * @param compilationLevel
     *           the compilation level.
     * @see #setClosureCompilationLevel(CompilationLevel)

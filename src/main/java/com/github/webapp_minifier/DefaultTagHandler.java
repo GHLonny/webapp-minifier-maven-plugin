@@ -296,10 +296,8 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
     *
     * @param urlString
     *           the URL to the external code.
-    * @param compressor
-    *           the compressor to use.
-    * @param builder
-    *           the builder for the compressed files.
+    * @param context
+    *           the minification context.
     * @return the original URL or the file name containing the minified code.
     * @throws FileNotFoundException
     *            if the minified file could not be created.
@@ -381,10 +379,8 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
     *           indicates if minification should be skipped.
     * @param mergeEmbedded
     *           indicates if the embedded code should be merged with an external file.
-    * @param compressor
-    *           the compressor to use.
-    * @param builder
-    *           the builder for the compressed files.
+    * @param context
+    *           the minification context.
     * @param metrics
     *           the place to store metrics about minification.
     * @return the minified result or <code>null</code> if it was added to another file.
