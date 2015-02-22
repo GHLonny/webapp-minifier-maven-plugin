@@ -2,7 +2,6 @@ grammar Primitives;
 
 eol
    :  LINEBREAK
-   |  EOF
    ;
 
 LINEBREAK

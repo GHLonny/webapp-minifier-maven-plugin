@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.IOUtil;
 
+import com.github.webapp_minifier.compressor.ClosureJavaScriptCompressor;
 import com.github.webapp_minifier.options.DefaultInlineConfigurationHandler;
 import com.github.webapp_minifier.options.DefaultOverridablePluginOptions;
 import com.github.webapp_minifier.options.DirectiveHandler;
@@ -29,7 +30,6 @@ import com.github.webapp_minifier.replacer.NodeHandler;
 import com.github.webapp_minifier.summary.HtmlFileSummary;
 import com.github.webapp_minifier.summary.MinificationSummary;
 import com.github.webapp_minifier.summary.MinifiedFileMetrics;
-import com.googlecode.htmlcompressor.compressor.ClosureJavaScriptCompressor;
 import com.googlecode.htmlcompressor.compressor.Compressor;
 import com.googlecode.htmlcompressor.compressor.YuiCssCompressor;
 import com.googlecode.htmlcompressor.compressor.YuiJavaScriptCompressor;
@@ -37,7 +37,7 @@ import com.googlecode.htmlcompressor.compressor.YuiJavaScriptCompressor;
 /**
  * This class provides the default {@link NodeHandler} implementation. It directs the minification
  * of code into the appropriate files.
- * 
+ *
  * @author Lonny
  */
 public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
@@ -70,7 +70,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
 
    /**
     * Constructs a new instance using the given log and options.
-    * 
+    *
     * @param log
     *           the log instance.
     * @param options
@@ -91,7 +91,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
 
    /**
     * Constructs a new YUI Compressor using the requested configuration.
-    * 
+    *
     * @param options
     *           the plugin options.
     * @return the new YUI Compressor.
@@ -104,7 +104,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
 
    /**
     * Constructs a new Google Closure Compressor using the requested configuration.
-    * 
+    *
     * @param options
     *           the plugin options.
     * @return the new Google Closure Compressor.
@@ -119,7 +119,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
 
    /**
     * Constructs a new YUI JavaScript Compressor using the requested configuration.
-    * 
+    *
     * @param options
     *           the plugin options.
     * @return the new YUI Compressor.
@@ -135,7 +135,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
 
    /**
     * Constructs a new CSS compressor.
-    * 
+    *
     * @param options
     *           the plugin options.
     * @return the new CSS compressor or <code>null</code> if CSS minification is disabled.
@@ -152,7 +152,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
 
    /**
     * Constructs a new JavaScript compressor.
-    * 
+    *
     * @param options
     *           the plugin options.
     * @return the new JavaScript compressor or <code>null</code> if JavaScript minification is
@@ -293,7 +293,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
 
    /**
     * Minifies the external code.
-    * 
+    *
     * @param urlString
     *           the URL to the external code.
     * @param compressor
@@ -374,7 +374,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
 
    /**
     * Minifies the embedded CSS or JavaScript.
-    * 
+    *
     * @param text
     *           the CSS or JavaScript to minify.
     * @param skipEmbedded
@@ -424,7 +424,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
 
    /**
     * Minifies the input using the provided compressor.
-    * 
+    *
     * @param compressor
     *           the compressor
     * @param input
@@ -443,7 +443,7 @@ public class DefaultTagHandler implements NodeHandler, DirectiveHandler {
     */
    protected String minify(final Compressor compressor, final String input,
          final File destinationFile, final MinifiedFileMetrics metrics)
-         throws FileNotFoundException, IOException {
+               throws FileNotFoundException, IOException {
       String result;
       OutputStream oStream = null;
       try {

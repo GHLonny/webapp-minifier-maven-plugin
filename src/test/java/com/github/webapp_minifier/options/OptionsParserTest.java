@@ -14,19 +14,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.github.webapp_minifier.options.DefaultInlineConfigurationHandler;
-import com.github.webapp_minifier.options.DefaultOverridablePluginOptions;
-import com.github.webapp_minifier.options.DirectiveHandler;
-import com.github.webapp_minifier.options.InlineConfigurationHandler;
-import com.github.webapp_minifier.options.JavaScriptCompressor;
-import com.github.webapp_minifier.options.OptionsParser;
-import com.github.webapp_minifier.options.OverridablePluginOptions;
-import com.github.webapp_minifier.options.ParseOptionException;
 import com.google.javascript.jscomp.CompilationLevel;
 
 /**
  * This class tests {@link OptionsParser}.
- * 
+ *
  * @author Lonny
  */
 @RunWith(JUnitParamsRunner.class)
@@ -45,7 +37,7 @@ public class OptionsParserTest {
 
    /**
     * Tests {@link OptionsParser#containsOptionsHeader(String)}.
-    * 
+    *
     * @param text
     *           the text to test.
     * @param expected
@@ -60,7 +52,7 @@ public class OptionsParserTest {
 
    /**
     * Provides the test data for {@link #testContainsOptionsHeader(String, boolean)}.
-    * 
+    *
     * @return the test data.
     */
    public Object containsOptionsHeaderTestData() {
@@ -73,19 +65,19 @@ public class OptionsParserTest {
 
    /**
     * Tests {@link OptionsParser#containsOptionsHeader(String)}.
-    * 
+    *
     * @param text
     *           the text to test.
     * @param properties
     *           the property being tested.
-    * @param expecteds
-    *           the expected result.
+    * @param expects
+    *           the expected results.
     * @throws Exception
     *            if the test fails.
     */
    @Test
    @Parameters(method = "parseTestData")
-   public void testParse(final String text, final Object properties, final Object expecteds)
+   public void testParse(final String text, final Object properties, final Object expects)
          throws Exception {
       if (properties == null) {
          final InlineConfigurationHandler inlineConfigHandler = mock(InlineConfigurationHandler.class);
@@ -108,27 +100,27 @@ public class OptionsParserTest {
          verify(directiveHandler, never()).splitJavaScript();
          if (properties.getClass().isArray()) {
             final String[] keys = (String[]) properties;
-            assertEquals(keys.length, ((Object[]) expecteds).length);
+            assertEquals(keys.length, ((Object[]) expects).length);
             for (int ii = 0; ii < keys.length; ii++) {
                final String key = keys[ii];
-               final Object expected = ((Object[]) expecteds)[ii];
+               final Object expect = ((Object[]) expects)[ii];
                final Object actual = PropertyUtils.getProperty(options, key);
-               assertEquals(expected.getClass(), actual.getClass());
-               assertEquals(properties + " should match", expected, actual);
+               assertEquals(expect.getClass(), actual.getClass());
+               assertEquals(properties + " should match", expect, actual);
             }
          } else {
             final String key = (String) properties;
             final Object actual = PropertyUtils.getProperty(options, key);
             assertNotNull(actual);
-            assertEquals(expecteds.getClass(), actual.getClass());
-            assertEquals(properties + " should match", expecteds, actual);
+            assertEquals(expects.getClass(), actual.getClass());
+            assertEquals(properties + " should match", expects, actual);
          }
       }
    }
 
    /**
     * Provides the test data for {@link #testContainsOptionsHeader(String, boolean)}.
-    * 
+    *
     * @return the test data.
     */
    public Object parseTestData() {
@@ -136,16 +128,16 @@ public class OptionsParserTest {
             $("", null, null),
             generateParsePropertyTestCase("closureCompilationLevel",
                   CompilationLevel.SIMPLE_OPTIMIZATIONS),
-            generateParsePropertyTestCase("jsCompressorEngine", JavaScriptCompressor.CLOSURE),
-            generateParsePropertyTestCase("yuiCssLineBreak", 38),
-            generateParsePropertyTestCase("skipCssMinify", true),
-            generateParseDirectiveTestCase("split-javascript"),
-            generateParseDirectiveTestCase("split-css"));
+                  generateParsePropertyTestCase("jsCompressorEngine", JavaScriptCompressor.CLOSURE),
+                  generateParsePropertyTestCase("yuiCssLineBreak", 38),
+                  generateParsePropertyTestCase("skipCssMinify", true),
+                  generateParseDirectiveTestCase("split-javascript"),
+                  generateParseDirectiveTestCase("split-css"));
    }
 
    /**
     * Generates a single test case for {@link #parseTestData()}.
-    * 
+    *
     * @param property
     *           the property to test.
     * @param value
@@ -158,7 +150,7 @@ public class OptionsParserTest {
 
    /**
     * Generates a single test case for {@link #parseTestData()}.
-    * 
+    *
     * @param property
     *           the property to test.
     * @param value
@@ -171,7 +163,7 @@ public class OptionsParserTest {
 
    /**
     * Tests {@link OptionsParser#containsOptionsHeader(String)}.
-    * 
+    *
     * @param text
     *           the text to test.
     * @throws Exception
@@ -185,14 +177,21 @@ public class OptionsParserTest {
             options);
       final DirectiveHandler directiveHandler = mock(DirectiveHandler.class);
       verifyNoMoreInteractions(directiveHandler);
-      this.parser.parse(text, configHandler, directiveHandler);
+      try {
+         this.parser.parse(text, configHandler, directiveHandler);
+      } catch (final RuntimeException e) {
+         if (e.getCause() instanceof ParseOptionException) {
+            throw (ParseOptionException) e.getCause();
+         }
+         throw e;
+      }
       final Object actual = PropertyUtils.getProperty(options, property);
       fail("An exception should have been thrown.  The value of " + property + " was " + actual);
    }
 
    /**
     * Provides the test data for {@link #testContainsOptionsHeader(String, boolean)}.
-    * 
+    *
     * @return the test data.
     */
    public Object parseExceptionTestData() {
@@ -203,7 +202,7 @@ public class OptionsParserTest {
 
    /**
     * Generates a single test case for {@link #parseTestData()}.
-    * 
+    *
     * @param property
     *           the property to test.
     * @param value
