@@ -59,9 +59,7 @@ import com.google.javascript.jscomp.CompilationLevel;
  */
 @Mojo(name = "minify-webapp", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
-   /**
-    * Get the Maven project.
-    */
+   /** Get the Maven project. */
    @Parameter(defaultValue = "${project}", required = true, readonly = true)
    private MavenProject project;
 
@@ -96,7 +94,6 @@ public class WebappMinifierMojo extends AbstractMojo implements PluginOptions {
    /**
     * TODO: Make the <code>TagReplacer</code> pluggable.
     */
-   @SuppressWarnings("unused")
    @Requirement(hint = "jsoup")
    private TagReplacer tagReplacer;
 
